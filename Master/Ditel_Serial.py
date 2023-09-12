@@ -7,7 +7,7 @@ import Ditel_DROS_Kernel
 from Ditel_System_Bypass import bypass
 
 HEAD_WORD = 254
-NO_SEND_DATA = 253
+NO_SEND_DATA = 252
 
 COMMAND_CHECK_ADDRESS =         200
 COMMAND_COMMUNICATION_BEGIN =   201
@@ -78,8 +78,9 @@ class ditelSerial:
                     if(sysReadData[1] == COMMAND_DECLARE_EMERGENCY):
                         Ditel_DROS_Kernel.addressWhereSendEmergency = self.useAddress
                     
-                    for _i in range(0, 6, 1):
-                        self.readData[_i] = sysReadData[_i]
+                    self.readData[0] = sysReadData[0]
+                    for _i in range(1, 6, 1):
+                        self.readData[_i] = sysReadData[_i] - 1
 
                     self.rxLogPrint(self.readData[0], self.readData[1], self.readData[2], self.readData[3], self.readData[4], self.readData[5])
 
@@ -106,13 +107,13 @@ class ditelSerial:
             time.sleep(0.001)
         bypass[self.useAddress].toTxUse = False
         self.serialModule.write(bytes([int(_sendData[0])]))
-        self.serialModule.write(bytes([int(_sendData[1])]))
-        self.serialModule.write(bytes([int(_sendData[2])]))
-        self.serialModule.write(bytes([int(_sendData[3])]))
-        self.serialModule.write(bytes([int(_sendData[4])]))
-        self.serialModule.write(bytes([int(_sendData[5])]))
+        self.serialModule.write(bytes([int(_sendData[1] + 1)]))
+        self.serialModule.write(bytes([int(_sendData[2] + 1)]))
+        self.serialModule.write(bytes([int(_sendData[3] + 1)]))
+        self.serialModule.write(bytes([int(_sendData[4] + 1)]))
+        self.serialModule.write(bytes([int(_sendData[5] + 1)]))
 
-        self.txLogPrint(_sendData[0], _sendData[1], _sendData[2], _sendData[3], _sendData[4], _sendData[5])
+        self.txLogPrint(_sendData[0], _sendData[1] + 1, _sendData[2] + 1, _sendData[3] + 1, _sendData[4] + 1, _sendData[5] + 1)
 
         _readReturnDataTime = 0
         while(self.avaiable() == False):
@@ -139,13 +140,13 @@ class ditelSerial:
             time.sleep(0.001)
         bypass[self.useAddress].toTxUse = False
         self.serialModule.write(bytes([int(HEAD_WORD)]))
-        self.serialModule.write(bytes([int(_command)]))
-        self.serialModule.write(bytes([int(NO_SEND_DATA)]))
-        self.serialModule.write(bytes([int(NO_SEND_DATA)]))
-        self.serialModule.write(bytes([int(NO_SEND_DATA)]))
-        self.serialModule.write(bytes([int(NO_SEND_DATA)]))
+        self.serialModule.write(bytes([int(_command + 1)]))
+        self.serialModule.write(bytes([int(NO_SEND_DATA + 1)]))
+        self.serialModule.write(bytes([int(NO_SEND_DATA + 1)]))
+        self.serialModule.write(bytes([int(NO_SEND_DATA + 1)]))
+        self.serialModule.write(bytes([int(NO_SEND_DATA + 1)]))
 
-        self.txLogPrint(HEAD_WORD, _command, NO_SEND_DATA, NO_SEND_DATA, NO_SEND_DATA, NO_SEND_DATA)
+        self.txLogPrint(HEAD_WORD, _command + 1, NO_SEND_DATA + 1, NO_SEND_DATA + 1, NO_SEND_DATA + 1, NO_SEND_DATA + 1)
 
         _readReturnDataTime = 0
         while(self.avaiable() == False):
@@ -173,17 +174,17 @@ class ditelSerial:
         _sendData_Int[0] = HEAD_WORD
         _sendData_Int[1] = _sendIntCommand
 
-        _sendData_Int[2] = int(_sendInt / (253 * 253 * 253))
-        _sendInt -= _sendData_Int[2] * 253 * 253 * 253
+        _sendData_Int[2] = int(_sendInt / (252 * 252 * 252) + 1)
+        _sendInt -= _sendData_Int[2] * 252 * 252 * 252 - 1
 
-        _sendData_Int[3] = int(_sendInt / (253 * 253))
-        _sendInt -= _sendData_Int[2] * 253 * 253
+        _sendData_Int[3] = int(_sendInt / (252 * 252) + 1)
+        _sendInt -= _sendData_Int[2] * 252 * 252 - 1 
 
-        _sendData_Int[4] = int(_sendInt / (253))
-        _sendInt -= _sendData_Int[4] * 253
+        _sendData_Int[4] = int(_sendInt / (252) + 1)
+        _sendInt -= _sendData_Int[4] * 252 - 1 
         
-        _sendData_Int[5] = int(_sendInt)
-        _sendInt -= _sendData_Int[5]
+        _sendData_Int[5] = int(_sendInt + 1)
+        _sendInt -= _sendData_Int[5] - 1
 
         if(_sendInt != 0):
             self.logPrint(False, "send int data")
@@ -205,7 +206,7 @@ class ditelSerial:
         _readInt = []*2
 
         _readInt[0] = _readData_Int[1]
-        _readInt[1] = _readData_Int[2] * 253 * 253 * 253 + _readData_Int[3] * 253 * 253 + _readData_Int[4] * 253 + _readData_Int[5]
+        _readInt[1] = (_readData_Int[2] * 252 * 252 * 252) + (_readData_Int[3] * 252 * 252) + (_readData_Int[4] - 1 * 252) + (_readData_Int[5] - 1)
         
         return _readInt
 

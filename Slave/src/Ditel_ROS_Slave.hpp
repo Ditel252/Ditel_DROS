@@ -10,7 +10,7 @@
 
 
 #define HEAD_WORD 254
-#define NO_SEND_DATA 253
+#define NO_SEND_DATA 252
 
 #define COMMAND_CHECK_ADDRESS       200
 #define COMMAND_COMMUNICATION_BEGIN 201
@@ -36,11 +36,11 @@ public:
         char sendCommandContents[7];
 
         sendCommandContents[0] = HEAD_WORD;
-        sendCommandContents[1] = _sendCommandContents;
-        sendCommandContents[2] = NO_SEND_DATA;
-        sendCommandContents[3] = NO_SEND_DATA;
-        sendCommandContents[4] = NO_SEND_DATA;
-        sendCommandContents[5] = NO_SEND_DATA;
+        sendCommandContents[1] = _sendCommandContents + 1;
+        sendCommandContents[2] = NO_SEND_DATA + 1;
+        sendCommandContents[3] = NO_SEND_DATA + 1;
+        sendCommandContents[4] = NO_SEND_DATA + 1;
+        sendCommandContents[5] = NO_SEND_DATA + 1;
         sendCommandContents[6] = '\0';
 
         Serial.println(sendCommandContents);
@@ -51,7 +51,7 @@ public:
         char sendDataContents[7];
 
         for (int _i = 0; _i < 6; _i++)
-            sendDataContents[_i] = _sendDataContents[_i];
+            sendDataContents[_i] = _sendDataContents[_i] + 1;
 
         sendDataContents[6] = '\0';
 
@@ -64,17 +64,17 @@ public:
         _sendData_Int[0] = HEAD_WORD;
         _sendData_Int[1] = _sendCommand_Int;
 
-        _sendData_Int[2] = (int)(_sendInt / (253 * 253 * 253));
-        _sendInt -= _sendData_Int[2] * 253 * 253 * 253;
+        _sendData_Int[2] = (int)(_sendInt / (252 * 252 * 252) + 1);
+        _sendInt -= _sendData_Int[2] * 252 * 252 * 252 - 1;
 
-        _sendData_Int[3] = (int)(_sendInt / (253 * 253));
-        _sendInt -= _sendData_Int[3] * 253 * 253;
+        _sendData_Int[3] = (int)(_sendInt / (252 * 252) + 1);
+        _sendInt -= _sendData_Int[3] * 252 * 252 - 1;
 
-        _sendData_Int[4] = (int)(_sendInt / (253));
-        _sendInt -= _sendData_Int[4] * 253;
+        _sendData_Int[4] = (int)(_sendInt / (252) + 1);
+        _sendInt -= _sendData_Int[4] * 252 - 1;
 
-        _sendData_Int[5] = (int)(_sendInt);
-        _sendInt -= _sendData_Int[5];
+        _sendData_Int[5] = (int)(_sendInt + 1);
+        _sendInt -= _sendData_Int[5] - 1;
 
         if(_sendInt != 0){
             return false;
@@ -113,7 +113,7 @@ public:
 
         *_sysReadInt = _sysReadData[1];
 
-        *(_sysReadInt + 1) = _sysReadData[2] * 253 * 253 * 253 + _sysReadData[3] * 253 * 253 + _sysReadData[4] * 253 + _sysReadData[5];
+        *(_sysReadInt + 1) = _sysReadData[2] * 252 * 252 * 252 + _sysReadData[3] * 252 * 252 + _sysReadData[4] * 252 + _sysReadData[5];
 
         return _sysReadInt;
     }

@@ -33,7 +33,7 @@ public:
         for (int _i = 1; _i < 6; _i++)
         {
           vTaskDelay(3 / portTICK_RATE_MS);
-          sysSerialReadData[_i] = Serial.read();
+          sysSerialReadData[_i] = Serial.read() - 1;
         }
 
         if (sysSerialReadData[1] == COMMAND_CHECK_ADDRESS)
@@ -75,13 +75,14 @@ public:
       for (int _i = 1; _i < 6; _i++)
       {
         vTaskDelay(3 / portTICK_RATE_MS);
-        sysSerialReadData[_i] = Serial.read();
+        sysSerialReadData[_i] = Serial.read() - 1;
       }
 
       if(sysSerialReadData[0] == HEAD_WORD){
         _serial._sysAvaiable = true;
 
-        for(int _i = 0; _i < 6; _i++)
+        _serial._sysReadData[0] = sysSerialReadData[0];
+        for(int _i = 1; _i < 6; _i++)
           _serial._sysReadData[_i] = sysSerialReadData[_i];
         
         if(sysSerialReadData[1] == COMMAND_COMMUNICATION_END)
