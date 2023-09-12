@@ -9,8 +9,9 @@
 #define ADDRESS 1
 
 
-#define HEAD_WORD 254
-#define NO_SEND_DATA 252
+#define HEAD_WORD       254
+#define NO_SEND_DATA    252
+#define INT_UNIT_MAX    251
 
 #define COMMAND_CHECK_ADDRESS       200
 #define COMMAND_COMMUNICATION_BEGIN 201
@@ -50,7 +51,9 @@ public:
     {
         char sendDataContents[7];
 
-        for (int _i = 0; _i < 6; _i++)
+        sendDataContents[0] = _sendDataContents[0];
+
+        for (int _i = 1; _i < 6; _i++)
             sendDataContents[_i] = _sendDataContents[_i] + 1;
 
         sendDataContents[6] = '\0';
@@ -64,14 +67,14 @@ public:
         _sendData_Int[0] = HEAD_WORD;
         _sendData_Int[1] = _sendCommand_Int;
 
-        _sendData_Int[2] = (int)(_sendInt / (252 * 252 * 252) + 1);
-        _sendInt -= _sendData_Int[2] * 252 * 252 * 252 - 1;
+        _sendData_Int[2] = (int)(_sendInt / (INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX) + 1);
+        _sendInt -= _sendData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX - 1;
 
-        _sendData_Int[3] = (int)(_sendInt / (252 * 252) + 1);
-        _sendInt -= _sendData_Int[3] * 252 * 252 - 1;
+        _sendData_Int[3] = (int)(_sendInt / (INT_UNIT_MAX * INT_UNIT_MAX) + 1);
+        _sendInt -= _sendData_Int[3] * INT_UNIT_MAX * INT_UNIT_MAX - 1;
 
-        _sendData_Int[4] = (int)(_sendInt / (252) + 1);
-        _sendInt -= _sendData_Int[4] * 252 - 1;
+        _sendData_Int[4] = (int)(_sendInt / (INT_UNIT_MAX) + 1);
+        _sendInt -= _sendData_Int[4] * INT_UNIT_MAX - 1;
 
         _sendData_Int[5] = (int)(_sendInt + 1);
         _sendInt -= _sendData_Int[5] - 1;
@@ -113,7 +116,7 @@ public:
 
         *_sysReadInt = _sysReadData[1];
 
-        *(_sysReadInt + 1) = _sysReadData[2] * 252 * 252 * 252 + _sysReadData[3] * 252 * 252 + _sysReadData[4] * 252 + _sysReadData[5];
+        *(_sysReadInt + 1) = _sysReadData[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX + _sysReadData[3] * INT_UNIT_MAX * INT_UNIT_MAX + _sysReadData[4] * INT_UNIT_MAX + _sysReadData[5];
 
         return _sysReadInt;
     }

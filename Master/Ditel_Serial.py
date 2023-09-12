@@ -8,6 +8,7 @@ from Ditel_System_Bypass import bypass
 
 HEAD_WORD = 254
 NO_SEND_DATA = 252
+INT_UNIT_MAX = 251
 
 COMMAND_CHECK_ADDRESS =         200
 COMMAND_COMMUNICATION_BEGIN =   201
@@ -18,20 +19,27 @@ def addressRead(_portName:str):
         serial1 = serial.Serial(_portName, 115200, timeout=0.2)
 
         serial1.write(bytes([int(HEAD_WORD)]))
-        serial1.write(bytes([int(COMMAND_CHECK_ADDRESS)]))
-        serial1.write(bytes([int(NO_SEND_DATA)]))
-        serial1.write(bytes([int(NO_SEND_DATA)]))
-        serial1.write(bytes([int(NO_SEND_DATA)]))
-        serial1.write(bytes([int(NO_SEND_DATA)]))
+        serial1.write(bytes([int(COMMAND_CHECK_ADDRESS + 1)]))
+        serial1.write(bytes([int(NO_SEND_DATA + 1)]))
+        serial1.write(bytes([int(NO_SEND_DATA + 1)]))
+        serial1.write(bytes([int(NO_SEND_DATA + 1)]))
+        serial1.write(bytes([int(NO_SEND_DATA + 1)]))
 
         returnAddressData = serial1.readline()
 
         try:
             result:bytes = struct.unpack('8B', returnAddressData)
 
+            resultAddress:bytes = [None]*6
+
             serial1.close()
 
-            return result
+            resultAddress[0] = result[0]
+
+            for _i in range(1, 6, 1):
+                resultAddress[_i] = result[_i] - 1
+
+            return resultAddress
         except:
             return [0,0,0,0,0,0]
         
@@ -174,14 +182,14 @@ class ditelSerial:
         _sendData_Int[0] = HEAD_WORD
         _sendData_Int[1] = _sendIntCommand
 
-        _sendData_Int[2] = int(_sendInt / (252 * 252 * 252) + 1)
-        _sendInt -= _sendData_Int[2] * 252 * 252 * 252 - 1
+        _sendData_Int[2] = int(_sendInt / (INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX) + 1)
+        _sendInt -= _sendData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX - 1
 
-        _sendData_Int[3] = int(_sendInt / (252 * 252) + 1)
-        _sendInt -= _sendData_Int[2] * 252 * 252 - 1 
+        _sendData_Int[3] = int(_sendInt / (INT_UNIT_MAX * INT_UNIT_MAX) + 1)
+        _sendInt -= _sendData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX - 1 
 
-        _sendData_Int[4] = int(_sendInt / (252) + 1)
-        _sendInt -= _sendData_Int[4] * 252 - 1 
+        _sendData_Int[4] = int(_sendInt / (INT_UNIT_MAX) + 1)
+        _sendInt -= _sendData_Int[4] * INT_UNIT_MAX - 1 
         
         _sendData_Int[5] = int(_sendInt + 1)
         _sendInt -= _sendData_Int[5] - 1
@@ -206,7 +214,7 @@ class ditelSerial:
         _readInt = []*2
 
         _readInt[0] = _readData_Int[1]
-        _readInt[1] = (_readData_Int[2] * 252 * 252 * 252) + (_readData_Int[3] * 252 * 252) + (_readData_Int[4] - 1 * 252) + (_readData_Int[5] - 1)
+        _readInt[1] = (_readData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX) + (_readData_Int[3] * INT_UNIT_MAX * INT_UNIT_MAX) + (_readData_Int[4] - 1 * INT_UNIT_MAX) + (_readData_Int[5] - 1)
         
         return _readInt
 

@@ -1,6 +1,6 @@
 """=======================================
 <Ditel Robot Operateting System>
-バージョン : v1.1.4
+バージョン : v1.1.5
 ======================================="""
 
 import tkinter
@@ -36,7 +36,7 @@ import User_Programs.Main_program as addMain
 
 #===============↓↓定数の宣言(ここから)↓↓===============
 #バージョン設定
-VERSION = "1.1.2"
+VERSION = "1.1.5"
 
 #window1の大きさとタイトルの設定
 WINDOW1_HEIGHT =    1920                                    #高さ
@@ -1368,7 +1368,7 @@ class window2_1_Contens:
             for _i in range(len(self.listSerialPort)):
                 self.listbox1.insert(tkinter.END, "[  OK  ] start read address of port" + str(_i))
                 self.returnInfo = addressRead(self.listSerialPort[_i])
-
+                
                 if((self.returnInfo[0] != HEAD_WORD) or (self.returnInfo[1] != COMMAND_CHECK_ADDRESS)):
                     self.listbox1.insert(tkinter.END, "[FAILED] finish read address of port" + str(_i))
                 else:
