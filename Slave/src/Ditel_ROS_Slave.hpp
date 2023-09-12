@@ -32,7 +32,7 @@ public:
     bool _sysStarted =      false;
     bool _sysEmergency =    false;
 
-    void sendCommand(uint _sendCommandContents){
+    void sendCommand(uint8_t _sendCommandContents){
         char sendCommandContents[7];
 
         sendCommandContents[0] = HEAD_WORD;
@@ -58,6 +58,33 @@ public:
         Serial.println(sendDataContents);
     }
 
+    bool sendInt(uint8_t _sendCommand_Int, int _sendInt){
+        uint8_t _sendData_Int[6] = {0};
+
+        _sendData_Int[0] = HEAD_WORD;
+        _sendData_Int[1] = _sendCommand_Int;
+
+        _sendData_Int[2] = (int)(_sendInt / (253 * 253 * 253));
+        _sendInt -= _sendData_Int[2] * 253 * 253 * 253;
+
+        _sendData_Int[3] = (int)(_sendInt / (253 * 253));
+        _sendInt -= _sendData_Int[3] * 253 * 253;
+
+        _sendData_Int[4] = (int)(_sendInt / (253));
+        _sendInt -= _sendData_Int[4] * 253;
+
+        _sendData_Int[5] = (int)(_sendInt);
+        _sendInt -= _sendData_Int[5];
+
+        if(_sendInt != 0){
+            return false;
+        }
+
+        send(_sendData_Int);
+
+        return true;
+    }
+
     bool started(){
         return _sysStarted;
     }
@@ -78,6 +105,17 @@ public:
 
     uint8_t readCommand(){
         return _sysReadData[1];
+    }
+
+    int *readInt(){
+        int _readInt;
+        int *_sysReadInt;
+
+        *_sysReadInt = _sysReadData[1];
+
+        *(_sysReadInt + 1) = _sysReadData[2] * 253 * 253 * 253 + _sysReadData[3] * 253 * 253 + _sysReadData[4] * 253 + _sysReadData[5];
+
+        return _sysReadInt;
     }
 
     uint8_t stateOfEmergency(){

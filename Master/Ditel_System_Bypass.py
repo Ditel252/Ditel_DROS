@@ -16,6 +16,18 @@ class ditelSystemBypass:
     def read(self):
         return self.readData
     
+    def readInt(self):
+        _readData_Int:bytes = []*6
+
+        _readData_Int = self.read()
+
+        _readInt = []*2
+
+        _readInt[0] = _readData_Int[1]
+        _readInt[1] = _readData_Int[2] * 253 * 253 * 253 + _readData_Int[3] * 253 * 253 + _readData_Int[4] * 253 + _readData_Int[5]
+        
+        return _readInt
+    
     def avaiable(self):
         return self.avaiableData
     
@@ -36,6 +48,31 @@ class ditelSystemBypass:
         self.requestSendData = True
         for _i in range(0, 6, 1):
             self.sendData[_i] = _sendData[_i]
+    
+    def sendInt(self, _sendIntCommand:bytes, _sendInt:int):
+        _sendData_Int:bytes = []*6
+
+        _sendData_Int[0] = HEAD_WORD
+        _sendData_Int[1] = _sendIntCommand
+
+        _sendData_Int[2] = int(_sendInt / (253 * 253 * 253))
+        _sendInt -= _sendData_Int[2] * 253 * 253 * 253
+
+        _sendData_Int[3] = int(_sendInt / (253 * 253))
+        _sendInt -= _sendData_Int[2] * 253 * 253
+
+        _sendData_Int[4] = int(_sendInt / (253))
+        _sendInt -= _sendData_Int[4] * 253
+        
+        _sendData_Int[5] = int(_sendInt)
+        _sendInt -= _sendData_Int[5]
+
+        if(_sendInt != 0):
+            return False
+
+        self.send(_sendData_Int)
+
+        return True
         
 
 bypass = [None, 
