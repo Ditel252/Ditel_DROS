@@ -768,7 +768,7 @@ class window1_Contents:
             for _i in range(1, 21, 1):
                 if(programsys.addressProgram[_i]._serial._log_contents != None):
                     mainWindow.logPrint(_i, programsys.addressProgram[_i]._serial._log_condition,programsys.addressProgram[_i]._serial._log_contents)
-                    programsys.addressProgram[_i]._log_contents = None
+                    programsys.addressProgram[_i]._serial._log_contents = None
                 
                 if(programsys.addressProgram[_i]._serial._txLog != None):
                     mainWindow.txLogPrint(_i, programsys.addressProgram[_i]._serial._txLog)
