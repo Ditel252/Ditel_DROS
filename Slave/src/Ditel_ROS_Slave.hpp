@@ -27,9 +27,10 @@ private:
 
 public:
     uint8_t _sysReadData[6] = {0};
-    bool _sysAvaiable = true;
-    bool _sysStarted = false;
-    bool _sysEmergency = false;
+
+    bool _sysAvaiable =     false;
+    bool _sysStarted =      false;
+    bool _sysEmergency =    false;
 
     void sendCommand(uint _sendCommandContents){
         char sendCommandContents[7];
@@ -45,7 +46,7 @@ public:
         Serial.println(sendCommandContents);
     }
 
-    void sendData(uint8_t *_sendDataContents)
+    void send(uint8_t *_sendDataContents)
     {
         char sendDataContents[7];
 
@@ -62,7 +63,13 @@ public:
     }
 
     bool avaiable(){
-        return _sysAvaiable;
+        if(_sysAvaiable == true){
+            _sysAvaiable = false;
+
+            return true;
+        }else{
+            return false;
+        }
     }
 
     uint8_t *read(){

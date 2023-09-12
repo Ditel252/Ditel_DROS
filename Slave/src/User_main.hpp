@@ -1,7 +1,7 @@
 /*=======================================
 <Ditel Robot Operating System Slave>
 
-version : 1.1.0
+version : 1.1.1
 ユーザーはここにプラグラムを書く
 =======================================*/
 
@@ -9,9 +9,6 @@ version : 1.1.0
 
 void _setup()
 {
-    pinMode(D13, OUTPUT);
-
-    digitalWrite(D13, LOW);
 }
 
 void _loop()

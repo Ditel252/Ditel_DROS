@@ -45,7 +45,7 @@ public:
           sysSerialSendData[4] = NO_SEND_DATA;
           sysSerialSendData[5] = NO_SEND_DATA;
 
-          _serial.sendData(sysSerialSendData);
+          _serial.send(sysSerialSendData);
         }
         else if (sysSerialReadData[1] == COMMAND_COMMUNICATION_BEGIN)
         {
@@ -55,7 +55,7 @@ public:
           for (int _i = 2; _i < 6; _i++)
             sysSerialSendData[_i] = sysSerialReadData[_i];
 
-          _serial.sendData(sysSerialSendData);
+          _serial.send(sysSerialSendData);
           _userSerial._sysStarted = true;
 
           break;
@@ -90,13 +90,10 @@ public:
           _userSerial._sysEmergency = true;
 
         sysSerialReadData[1] += 10;
-        _serial.sendData(sysSerialReadData);
-        
-        vTaskDelay(200 / portTICK_RATE_MS);
+        _serial.send(sysSerialReadData);
       }
     }
 
-    _serial._sysAvaiable = false;
     vTaskDelay(1 / portTICK_RATE_MS);
   }
 };

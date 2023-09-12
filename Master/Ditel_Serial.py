@@ -67,8 +67,6 @@ class ditelSerial:
 
     def _sysSerialRead(self):
         while Ditel_DROS_Kernel.threadCondition:
-            self._serialAvaiableVariable = False
-
             sysSerialReadData:str = self.serialModule.readline()
 
             try:
@@ -174,7 +172,12 @@ class ditelSerial:
          return self.readData
 
     def avaiable(self):
-        return self._serialAvaiableVariable
+        if(self._serialAvaiableVariable == True):
+            self._serialAvaiableVariable = False
+            return True
+        else:
+            self._serialAvaiableVariable = False
+            return False
     
     def logPrint(self, _condition:bool, _logInfo:str):
         self._log_condition = _condition
