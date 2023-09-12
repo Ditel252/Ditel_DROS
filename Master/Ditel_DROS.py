@@ -1,6 +1,6 @@
 """=======================================
 <Ditel Robot Operateting System>
-バージョン : v1.1.5
+バージョン : v1.1.6
 ======================================="""
 
 import tkinter
@@ -36,7 +36,7 @@ import User_Programs.Main_program as addMain
 
 #===============↓↓定数の宣言(ここから)↓↓===============
 #バージョン設定
-VERSION = "1.1.5"
+VERSION = "1.1.6"
 
 #window1の大きさとタイトルの設定
 WINDOW1_HEIGHT =    1920                                    #高さ
@@ -3331,7 +3331,10 @@ class _bypass:
                 if(portAddressRelationships[_i] != None):
                     try:
                         Ditel_System_Bypass.bypass[_i].readData = programsys.addressProgram[_i]._serial.read()
-                        Ditel_System_Bypass.bypass[_i].avaiableData = programsys.addressProgram[_i]._serial.avaiable()
+
+                        if(programsys.addressProgram[_i]._serial._serialAvaiableVariableToBypass != False):
+                            Ditel_System_Bypass.bypass[_i].avaiableData = programsys.addressProgram[_i]._serial._serialAvaiableVariableToBypass
+                            programsys.addressProgram[_i]._serial._serialAvaiableVariableToBypass = False
                     except:
                         pass
                     

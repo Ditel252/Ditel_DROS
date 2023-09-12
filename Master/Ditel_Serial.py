@@ -62,6 +62,7 @@ class ditelSerial:
     def __init__(self, _sysAddress:int, _sysPortName:str):
         self.portName:str = _sysPortName
         self._serialAvaiableVariable:bool = False
+        self._serialAvaiableVariableToBypass:bool = False
 
         self._log_condition:bool = False
         self._log_contents:str = None
@@ -82,6 +83,7 @@ class ditelSerial:
 
                 if(sysReadData[0] == HEAD_WORD):
                     self._serialAvaiableVariable = True
+                    self._serialAvaiableVariableToBypass = True
 
                     if(sysReadData[1] == COMMAND_DECLARE_EMERGENCY):
                         Ditel_DROS_Kernel.addressWhereSendEmergency = self.useAddress
@@ -177,22 +179,22 @@ class ditelSerial:
             return False
         
     def sendInt(self, _sendIntCommand:bytes, _sendInt:int):
-        _sendData_Int:bytes = []*6
+        _sendData_Int:bytes = [None]*6
 
         _sendData_Int[0] = HEAD_WORD
         _sendData_Int[1] = _sendIntCommand
 
-        _sendData_Int[2] = int(_sendInt / (INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX) + 1)
-        _sendInt -= _sendData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX - 1
+        _sendData_Int[2] = int(_sendInt / (INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX))
+        _sendInt -= _sendData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX
 
-        _sendData_Int[3] = int(_sendInt / (INT_UNIT_MAX * INT_UNIT_MAX) + 1)
-        _sendInt -= _sendData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX - 1 
+        _sendData_Int[3] = int(_sendInt / (INT_UNIT_MAX * INT_UNIT_MAX))
+        _sendInt -= _sendData_Int[3] * INT_UNIT_MAX * INT_UNIT_MAX
 
-        _sendData_Int[4] = int(_sendInt / (INT_UNIT_MAX) + 1)
-        _sendInt -= _sendData_Int[4] * INT_UNIT_MAX - 1 
+        _sendData_Int[4] = int(_sendInt / (INT_UNIT_MAX))
+        _sendInt -= _sendData_Int[4] * INT_UNIT_MAX
         
-        _sendData_Int[5] = int(_sendInt + 1)
-        _sendInt -= _sendData_Int[5] - 1
+        _sendData_Int[5] = int(_sendInt)
+        _sendInt -= _sendData_Int[5]
 
         if(_sendInt != 0):
             self.logPrint(False, "send int data")
@@ -207,11 +209,11 @@ class ditelSerial:
          return self.readData
     
     def readInt(self):
-        _readData_Int:bytes = []*6
+        _readData_Int:bytes = [None]*6
 
         _readData_Int = self.read()
 
-        _readInt = []*2
+        _readInt = [None]*2
 
         _readInt[0] = _readData_Int[1]
         _readInt[1] = (_readData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX) + (_readData_Int[3] * INT_UNIT_MAX * INT_UNIT_MAX) + (_readData_Int[4] - 1 * INT_UNIT_MAX) + (_readData_Int[5] - 1)
@@ -223,7 +225,6 @@ class ditelSerial:
             self._serialAvaiableVariable = False
             return True
         else:
-            self._serialAvaiableVariable = False
             return False
     
     def logPrint(self, _condition:bool, _logInfo:str):

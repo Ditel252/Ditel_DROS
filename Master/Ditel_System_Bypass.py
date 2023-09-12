@@ -2,7 +2,8 @@ import time
 from Ditel_DROS_Kernel import threadCondition
 
 HEAD_WORD = 254
-NO_SEND_DATA = 253
+NO_SEND_DATA = 252
+INT_UNIT_MAX = 251
 
 class ditelSystemBypass:
     def __init__(self, _address:int):
@@ -17,19 +18,23 @@ class ditelSystemBypass:
         return self.readData
     
     def readInt(self):
-        _readData_Int:bytes = []*6
+        _readData_Int:bytes = [None]*6
 
         _readData_Int = self.read()
 
-        _readInt = []*2
+        _readInt = [None]*2
 
         _readInt[0] = _readData_Int[1]
-        _readInt[1] = _readData_Int[2] * 253 * 253 * 253 + _readData_Int[3] * 253 * 253 + _readData_Int[4] * 253 + _readData_Int[5]
+        _readInt[1] = _readData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX + _readData_Int[3] * INT_UNIT_MAX * INT_UNIT_MAX + _readData_Int[4] * INT_UNIT_MAX + _readData_Int[5]
         
         return _readInt
     
     def avaiable(self):
-        return self.avaiableData
+        if(self.avaiableData == True):
+            self.avaiableData = False
+            return True
+        else:
+            return False
     
     def sendCommand(self, _command:bytes):
         while ((self.requestSendData != False) and (threadCondition == True)):
@@ -50,19 +55,19 @@ class ditelSystemBypass:
             self.sendData[_i] = _sendData[_i]
     
     def sendInt(self, _sendIntCommand:bytes, _sendInt:int):
-        _sendData_Int:bytes = []*6
+        _sendData_Int:bytes = [None]*6
 
         _sendData_Int[0] = HEAD_WORD
         _sendData_Int[1] = _sendIntCommand
 
-        _sendData_Int[2] = int(_sendInt / (253 * 253 * 253))
-        _sendInt -= _sendData_Int[2] * 253 * 253 * 253
+        _sendData_Int[2] = int(_sendInt / (INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX))
+        _sendInt -= _sendData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX
 
-        _sendData_Int[3] = int(_sendInt / (253 * 253))
-        _sendInt -= _sendData_Int[2] * 253 * 253
+        _sendData_Int[3] = int(_sendInt / (INT_UNIT_MAX * INT_UNIT_MAX))
+        _sendInt -= _sendData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX
 
-        _sendData_Int[4] = int(_sendInt / (253))
-        _sendInt -= _sendData_Int[4] * 253
+        _sendData_Int[4] = int(_sendInt / (INT_UNIT_MAX))
+        _sendInt -= _sendData_Int[4] * INT_UNIT_MAX
         
         _sendData_Int[5] = int(_sendInt)
         _sendInt -= _sendData_Int[5]
