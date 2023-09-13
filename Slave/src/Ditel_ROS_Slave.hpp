@@ -91,6 +91,9 @@ public:
     }
 
     bool started(){
+        if(_sysStarted == true)
+            delay(10);
+        
         return _sysStarted;
     }
 
