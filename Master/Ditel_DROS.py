@@ -1,6 +1,6 @@
 """=======================================
 <Ditel Robot Operateting System>
-バージョン : v1.1.9
+バージョン : v1.1.10
 ======================================="""
 
 import tkinter
@@ -36,7 +36,7 @@ import User_Programs.Main_program as addMain
 
 #===============↓↓定数の宣言(ここから)↓↓===============
 #バージョン設定
-VERSION = "1.1.9"
+VERSION = "1.1.10"
 
 #window1の大きさとタイトルの設定
 WINDOW1_HEIGHT =    1920                                        #高さ
@@ -91,6 +91,10 @@ COLOR_BUTTON_TOUCH_BACK =       "gray30"        #カーソルがボタンに触�
 COLOR_BUTTON_TOUCH_TEXT =       "goldenrod1"    #カーソルがボタンに触れた際のテキストの色
 COLOR_BUTTON_CLICK_BACK =       "gray13"        #ボタンがクリックされた際のボタンの色
 COLOR_BUTTON_CLICK_TEXT =       "goldenrod4"    #ボタンがクリックされた際のテキストの色
+
+LOG_PRINT_PERIOD =              0.005   #ログ表示の更新速度
+SERIAL_START_COOL_DOWN_TIME =   0.05    #シリアル通信がスタートしてからユーザープログラムが始まるまでの時間
+USER_PROGURAM_PERIOD =          0.01    #ユーザープログラムの_loopの周期
 #===============↑↑定数の宣言(ここまで)↑↑===============
 
 
@@ -778,7 +782,7 @@ class window1_Contents:
                     mainWindow.rxLogPrint(_i, programsys.addressProgram[_i]._serial._rxLog)
                     programsys.addressProgram[_i]._serial._rxLog = None
                     
-            time.sleep(0.1)
+            time.sleep(LOG_PRINT_PERIOD)
 
     def startWindow(self):
         self.window1_frame.deiconify()
@@ -3170,173 +3174,173 @@ class userPrograms:
 
 
     def _address1Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[1]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[1]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address2Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[2]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[2]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address3Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[3]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[3]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address4Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[4]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[4]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address5Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[5]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[5]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address6Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[6]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[6]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address7Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[7]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[7]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address8Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[8]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[8]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address9Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[9]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[9]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address10Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[10]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[10]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     
     def _address11Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[11]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[11]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address12Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[12]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[12]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address13Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[13]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[13]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address14Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[14]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[14]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address15Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[15]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[15]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address16Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[16]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[16]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address17Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[17]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[17]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address18Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[18]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[18]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address19Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[19]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[19]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _address20Program(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[20]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[20]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
 
     def _userProgram(self):
-        time.sleep(0.05)
+        time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[0]._setup()
 
         while Ditel_DROS_Kernel.threadCondition:
             self.addressProgram[0]._loop()
-            time.sleep(0.01)
+            time.sleep(USER_PROGURAM_PERIOD)
         
 #==============↑↑UserProgram関係(ここまで)↑↑===============
 
