@@ -1,6 +1,6 @@
 """=======================================
 <Ditel Robot Operateting System>
-バージョン : v1.1.8
+バージョン : v1.1.9
 ======================================="""
 
 import tkinter
@@ -36,12 +36,12 @@ import User_Programs.Main_program as addMain
 
 #===============↓↓定数の宣言(ここから)↓↓===============
 #バージョン設定
-VERSION = "1.1.8"
+VERSION = "1.1.9"
 
 #window1の大きさとタイトルの設定
-WINDOW1_HEIGHT =    1920                                    #高さ
-WINDOW1_WIDETH =    1080                                    #横幅
-WINDOW1_TITEL =     "Ditel Robot Operating System  v0.2.0"  #タイトル
+WINDOW1_HEIGHT =    1920                                        #高さ
+WINDOW1_WIDETH =    1080                                        #横幅
+WINDOW1_TITEL =     "Ditel Robot Operating System " + VERSION   #タイトル
 
 #window2の大きさとタイトルの設定
 WINDOW2_HEIGHT =    150
@@ -3170,6 +3170,7 @@ class userPrograms:
 
 
     def _address1Program(self):
+        time.sleep(0.05)
         self.addressProgram[1]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3177,6 +3178,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address2Program(self):
+        time.sleep(0.05)
         self.addressProgram[2]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3184,6 +3186,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address3Program(self):
+        time.sleep(0.05)
         self.addressProgram[3]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3191,6 +3194,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address4Program(self):
+        time.sleep(0.05)
         self.addressProgram[4]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3198,6 +3202,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address5Program(self):
+        time.sleep(0.05)
         self.addressProgram[5]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3205,6 +3210,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address6Program(self):
+        time.sleep(0.05)
         self.addressProgram[6]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3212,6 +3218,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address7Program(self):
+        time.sleep(0.05)
         self.addressProgram[7]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3219,6 +3226,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address8Program(self):
+        time.sleep(0.05)
         self.addressProgram[8]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3226,6 +3234,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address9Program(self):
+        time.sleep(0.05)
         self.addressProgram[9]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3233,6 +3242,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address10Program(self):
+        time.sleep(0.05)
         self.addressProgram[10]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3241,6 +3251,7 @@ class userPrograms:
 
     
     def _address11Program(self):
+        time.sleep(0.05)
         self.addressProgram[11]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3248,6 +3259,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address12Program(self):
+        time.sleep(0.05)
         self.addressProgram[12]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3255,6 +3267,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address13Program(self):
+        time.sleep(0.05)
         self.addressProgram[13]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3262,6 +3275,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address14Program(self):
+        time.sleep(0.05)
         self.addressProgram[14]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3269,6 +3283,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address15Program(self):
+        time.sleep(0.05)
         self.addressProgram[15]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3276,6 +3291,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address16Program(self):
+        time.sleep(0.05)
         self.addressProgram[16]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3283,6 +3299,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address17Program(self):
+        time.sleep(0.05)
         self.addressProgram[17]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3290,6 +3307,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address18Program(self):
+        time.sleep(0.05)
         self.addressProgram[18]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3297,6 +3315,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address19Program(self):
+        time.sleep(0.05)
         self.addressProgram[19]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3304,6 +3323,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _address20Program(self):
+        time.sleep(0.05)
         self.addressProgram[20]._setup()
         
         while Ditel_DROS_Kernel.threadCondition:
@@ -3311,6 +3331,7 @@ class userPrograms:
             time.sleep(0.01)
 
     def _userProgram(self):
+        time.sleep(0.05)
         self.addressProgram[0]._setup()
 
         while Ditel_DROS_Kernel.threadCondition:
