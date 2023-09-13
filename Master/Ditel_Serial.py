@@ -6,24 +6,25 @@ import time
 import Ditel_DROS_Kernel
 from Ditel_System_Bypass import bypass
 
-HEAD_WORD = 254
-NO_SEND_DATA = 252
-INT_UNIT_MAX = 251
+HEAD_WORD =                 254
+NO_SEND_DATA =              242
+INT_UNIT_MAX =              241
+COMMUNICATION_BASE_VALUE =  11
 
 COMMAND_CHECK_ADDRESS =         200
 COMMAND_COMMUNICATION_BEGIN =   201
 COMMAND_COMMUNICATION_END =     202
-COMMAND_DECLARE_EMERGENCY =    203
+COMMAND_DECLARE_EMERGENCY =     203
 
 def addressRead(_portName:str):
         serial1 = serial.Serial(_portName, 115200, timeout=0.2)
 
         serial1.write(bytes([int(HEAD_WORD)]))
-        serial1.write(bytes([int(COMMAND_CHECK_ADDRESS + 1)]))
-        serial1.write(bytes([int(NO_SEND_DATA + 1)]))
-        serial1.write(bytes([int(NO_SEND_DATA + 1)]))
-        serial1.write(bytes([int(NO_SEND_DATA + 1)]))
-        serial1.write(bytes([int(NO_SEND_DATA + 1)]))
+        serial1.write(bytes([int(COMMAND_CHECK_ADDRESS + COMMUNICATION_BASE_VALUE)]))
+        serial1.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
+        serial1.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
+        serial1.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
+        serial1.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
 
         returnAddressData = serial1.readline()
 
@@ -37,7 +38,7 @@ def addressRead(_portName:str):
             resultAddress[0] = result[0]
 
             for _i in range(1, 6, 1):
-                resultAddress[_i] = result[_i] - 1
+                resultAddress[_i] = result[_i] - COMMUNICATION_BASE_VALUE
 
             return resultAddress
         except:
@@ -85,16 +86,14 @@ class ditelSerial:
                     self._serialAvaiableVariable = True
                     self._serialAvaiableVariableToBypass = True
 
-                    if(sysReadData[1] == COMMAND_DECLARE_EMERGENCY):
-                        Ditel_DROS_Kernel.addressWhereSendEmergency = self.useAddress
+                    self.rxLogPrint(sysReadData[0], sysReadData[1], sysReadData[2], sysReadData[3], sysReadData[4], sysReadData[5])
                     
                     self.readData[0] = sysReadData[0]
                     for _i in range(1, 6, 1):
-                        self.readData[_i] = sysReadData[_i] - 1
+                        self.readData[_i] = sysReadData[_i] - COMMUNICATION_BASE_VALUE
 
-                    self.rxLogPrint(self.readData[0], self.readData[1], self.readData[2], self.readData[3], self.readData[4], self.readData[5])
-
-                    time.sleep(0.2)
+                    if(sysReadData[1] == COMMAND_DECLARE_EMERGENCY):
+                        Ditel_DROS_Kernel.addressWhereSendEmergency = self.useAddress
                 else:
                     pass
             except:
@@ -117,13 +116,13 @@ class ditelSerial:
             time.sleep(0.001)
         bypass[self.useAddress].toTxUse = False
         self.serialModule.write(bytes([int(_sendData[0])]))
-        self.serialModule.write(bytes([int(_sendData[1] + 1)]))
-        self.serialModule.write(bytes([int(_sendData[2] + 1)]))
-        self.serialModule.write(bytes([int(_sendData[3] + 1)]))
-        self.serialModule.write(bytes([int(_sendData[4] + 1)]))
-        self.serialModule.write(bytes([int(_sendData[5] + 1)]))
+        self.serialModule.write(bytes([int(_sendData[1] + COMMUNICATION_BASE_VALUE)]))
+        self.serialModule.write(bytes([int(_sendData[2] + COMMUNICATION_BASE_VALUE)]))
+        self.serialModule.write(bytes([int(_sendData[3] + COMMUNICATION_BASE_VALUE)]))
+        self.serialModule.write(bytes([int(_sendData[4] + COMMUNICATION_BASE_VALUE)]))
+        self.serialModule.write(bytes([int(_sendData[5] + COMMUNICATION_BASE_VALUE)]))
 
-        self.txLogPrint(_sendData[0], _sendData[1] + 1, _sendData[2] + 1, _sendData[3] + 1, _sendData[4] + 1, _sendData[5] + 1)
+        self.txLogPrint(_sendData[0], _sendData[1] + COMMUNICATION_BASE_VALUE, _sendData[2] + COMMUNICATION_BASE_VALUE, _sendData[3] + COMMUNICATION_BASE_VALUE, _sendData[4] + COMMUNICATION_BASE_VALUE, _sendData[5] + COMMUNICATION_BASE_VALUE)
 
         _readReturnDataTime = 0
         while(self.avaiable() == False):
@@ -150,13 +149,13 @@ class ditelSerial:
             time.sleep(0.001)
         bypass[self.useAddress].toTxUse = False
         self.serialModule.write(bytes([int(HEAD_WORD)]))
-        self.serialModule.write(bytes([int(_command + 1)]))
-        self.serialModule.write(bytes([int(NO_SEND_DATA + 1)]))
-        self.serialModule.write(bytes([int(NO_SEND_DATA + 1)]))
-        self.serialModule.write(bytes([int(NO_SEND_DATA + 1)]))
-        self.serialModule.write(bytes([int(NO_SEND_DATA + 1)]))
+        self.serialModule.write(bytes([int(_command + COMMUNICATION_BASE_VALUE)]))
+        self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
+        self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
+        self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
+        self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
 
-        self.txLogPrint(HEAD_WORD, _command + 1, NO_SEND_DATA + 1, NO_SEND_DATA + 1, NO_SEND_DATA + 1, NO_SEND_DATA + 1)
+        self.txLogPrint(HEAD_WORD, _command + COMMUNICATION_BASE_VALUE, NO_SEND_DATA + COMMUNICATION_BASE_VALUE, NO_SEND_DATA + COMMUNICATION_BASE_VALUE, NO_SEND_DATA + COMMUNICATION_BASE_VALUE, NO_SEND_DATA + COMMUNICATION_BASE_VALUE)
 
         _readReturnDataTime = 0
         while(self.avaiable() == False):
@@ -216,7 +215,7 @@ class ditelSerial:
         _readInt = [None]*2
 
         _readInt[0] = _readData_Int[1]
-        _readInt[1] = (_readData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX) + (_readData_Int[3] * INT_UNIT_MAX * INT_UNIT_MAX) + (_readData_Int[4] - 1 * INT_UNIT_MAX) + (_readData_Int[5] - 1)
+        _readInt[1] = (_readData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX) + (_readData_Int[3] * INT_UNIT_MAX * INT_UNIT_MAX) + (_readData_Int[4] * INT_UNIT_MAX) + _readData_Int[5]
         
         return _readInt
 

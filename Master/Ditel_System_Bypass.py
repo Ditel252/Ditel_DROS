@@ -2,8 +2,8 @@ import time
 from Ditel_DROS_Kernel import threadCondition
 
 HEAD_WORD = 254
-NO_SEND_DATA = 252
-INT_UNIT_MAX = 251
+NO_SEND_DATA = 242
+INT_UNIT_MAX = 241
 
 class ditelSystemBypass:
     def __init__(self, _address:int):
@@ -102,4 +102,3 @@ bypass = [None,
           ditelSystemBypass(19), 
           ditelSystemBypass(20), 
          ]
-

@@ -9,9 +9,10 @@
 #define ADDRESS 1
 
 
-#define HEAD_WORD       254
-#define NO_SEND_DATA    252
-#define INT_UNIT_MAX    251
+#define HEAD_WORD                   254
+#define NO_SEND_DATA                242
+#define INT_UNIT_MAX                241
+#define COMMUNICATION_BASE_VALUE    11
 
 #define COMMAND_CHECK_ADDRESS       200
 #define COMMAND_COMMUNICATION_BEGIN 201
@@ -37,11 +38,12 @@ public:
         char sendCommandContents[7];
 
         sendCommandContents[0] = HEAD_WORD;
-        sendCommandContents[1] = _sendCommandContents + 1;
-        sendCommandContents[2] = NO_SEND_DATA + 1;
-        sendCommandContents[3] = NO_SEND_DATA + 1;
-        sendCommandContents[4] = NO_SEND_DATA + 1;
-        sendCommandContents[5] = NO_SEND_DATA + 1;
+        sendCommandContents[1] = _sendCommandContents + COMMUNICATION_BASE_VALUE;
+        sendCommandContents[2] = NO_SEND_DATA + COMMUNICATION_BASE_VALUE;
+        sendCommandContents[3] = NO_SEND_DATA + COMMUNICATION_BASE_VALUE;
+        sendCommandContents[4] = NO_SEND_DATA + COMMUNICATION_BASE_VALUE;
+        sendCommandContents[5] = NO_SEND_DATA + COMMUNICATION_BASE_VALUE;
+
         sendCommandContents[6] = '\0';
 
         Serial.println(sendCommandContents);
@@ -54,7 +56,7 @@ public:
         sendDataContents[0] = _sendDataContents[0];
 
         for (int _i = 1; _i < 6; _i++)
-            sendDataContents[_i] = _sendDataContents[_i] + 1;
+            sendDataContents[_i] = _sendDataContents[_i] + COMMUNICATION_BASE_VALUE;
 
         sendDataContents[6] = '\0';
 
@@ -67,17 +69,17 @@ public:
         _sendData_Int[0] = HEAD_WORD;
         _sendData_Int[1] = _sendCommand_Int;
 
-        _sendData_Int[2] = (int)(_sendInt / (INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX) + 1);
-        _sendInt -= _sendData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX - 1;
+        _sendData_Int[2] = (int)(_sendInt / (INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX));
+        _sendInt -= _sendData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX;
 
-        _sendData_Int[3] = (int)(_sendInt / (INT_UNIT_MAX * INT_UNIT_MAX) + 1);
-        _sendInt -= _sendData_Int[3] * INT_UNIT_MAX * INT_UNIT_MAX - 1;
+        _sendData_Int[3] = (int)(_sendInt / (INT_UNIT_MAX * INT_UNIT_MAX));
+        _sendInt -= _sendData_Int[3] * INT_UNIT_MAX * INT_UNIT_MAX;
 
-        _sendData_Int[4] = (int)(_sendInt / (INT_UNIT_MAX) + 1);
-        _sendInt -= _sendData_Int[4] * INT_UNIT_MAX - 1;
+        _sendData_Int[4] = (int)(_sendInt / (INT_UNIT_MAX));
+        _sendInt -= _sendData_Int[4] * INT_UNIT_MAX;
 
-        _sendData_Int[5] = (int)(_sendInt + 1);
-        _sendInt -= _sendData_Int[5] - 1;
+        _sendData_Int[5] = (int)(_sendInt);
+        _sendInt -= _sendData_Int[5];
 
         if(_sendInt != 0){
             return false;
