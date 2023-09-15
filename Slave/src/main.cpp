@@ -6,9 +6,8 @@
 
 #include <Arduino.h>
 #include "User_main.hpp"
-#include <STM32FreeRTOS.h>
 
-void serialTask(void *pvParameters);
+void serialReadTask(void *pvParameters);
 void userProgramTask(void *pvParameters);
 
 class systemSerial
@@ -21,8 +20,6 @@ public:
   void setupProcess()
   {
     Serial.begin(115200);
-
-    pinMode(D13, OUTPUT);
 
     while (true)
     {
@@ -45,7 +42,16 @@ public:
           sysSerialSendData[4] = NO_SEND_DATA;
           sysSerialSendData[5] = NO_SEND_DATA;
 
-          _serial.send(sysSerialSendData);
+          char _sendDataContents[7];
+
+          _sendDataContents[0] = sysSerialSendData[0];
+
+          for (int _i = 1; _i < 6; _i++)
+              _sendDataContents[_i] = sysSerialSendData[_i] + COMMUNICATION_BASE_VALUE;
+
+          _sendDataContents[6] = '\0';
+
+        Serial.println(_sendDataContents);
         }
         else if (sysSerialReadData[1] == COMMAND_COMMUNICATION_BEGIN)
         {
@@ -55,7 +61,17 @@ public:
           for (int _i = 2; _i < 6; _i++)
             sysSerialSendData[_i] = sysSerialReadData[_i];
 
-          _serial.send(sysSerialSendData);
+          char _sendDataContents[7];
+
+          _sendDataContents[0] = sysSerialSendData[0];
+
+          for (int _i = 1; _i < 6; _i++)
+              _sendDataContents[_i] = sysSerialSendData[_i] + COMMUNICATION_BASE_VALUE;
+
+          _sendDataContents[6] = '\0';
+
+          Serial.println(_sendDataContents);
+
           _userSerial._sysStarted = true;
 
           break;
@@ -72,27 +88,43 @@ public:
 
     if (sysSerialReadData[0] == HEAD_WORD)
     {
+
       for (int _i = 1; _i < 6; _i++)
       {
         vTaskDelay(3 / portTICK_RATE_MS);
         sysSerialReadData[_i] = Serial.read() - COMMUNICATION_BASE_VALUE;
       }
+      _userSerial._sysUartCanUse = false;
 
-      if(sysSerialReadData[0] == HEAD_WORD){
-        _serial._sysAvaiable = true;
+      vTaskDelay(10 / portTICK_RATE_MS);
+      
+      _userSerial._sysReadData[0] = sysSerialReadData[0];
+      for (int _i = 1; _i < 6; _i++)
+        _userSerial._sysReadData[_i] = sysSerialReadData[_i];
 
-        _serial._sysReadData[0] = sysSerialReadData[0];
-        for(int _i = 1; _i < 6; _i++)
-          _serial._sysReadData[_i] = sysSerialReadData[_i];
-        
-        if(sysSerialReadData[1] == COMMAND_COMMUNICATION_END)
-          _userSerial._sysStarted = false;
-        else if(sysSerialReadData[1] == COMMAND_DECLARE_EMERGENCY)
-          _userSerial._sysEmergency = true;
+      if (sysSerialReadData[1] == COMMAND_COMMUNICATION_END)
+        _userSerial._sysStarted = false;
+      else if (sysSerialReadData[1] == COMMAND_DECLARE_EMERGENCY)
+        _userSerial._sysEmergency = true;
 
-        sysSerialReadData[1] += 10;
-        _serial.send(sysSerialReadData);
-      }
+      sysSerialReadData[1] += 10;
+
+      char _sendDataContents[7];
+
+      _sendDataContents[0] = sysSerialReadData[0];
+
+      for (int _i = 1; _i < 6; _i++)
+        _sendDataContents[_i] = sysSerialReadData[_i] + COMMUNICATION_BASE_VALUE;
+
+      _sendDataContents[6] = '\0';
+
+      _userSerial._sysAvaiable = true;
+
+      Serial.println(_sendDataContents);
+
+      vTaskDelay(CONTINUOUS_SEND_BUFFER_TIME / portTICK_RATE_MS);
+
+      _userSerial._sysUartCanUse = true;
     }
 
     vTaskDelay(1 / portTICK_RATE_MS);
@@ -103,7 +135,7 @@ systemSerial serialsys;
 
 void setup()
 {
-  xTaskCreate(serialTask, "Task for serial", MEMORY_SIZE_SERIAL_TASK, NULL, 2, NULL);
+  xTaskCreate(serialReadTask, "Task for serial", MEMORY_SIZE_SERIAL_READ_TASK, NULL, 2, NULL);
   xTaskCreate(userProgramTask, "Task for user program", MEMORY_SIZE_USER_PROGRAM_TASK, NULL, 1, NULL);
 
   vTaskStartScheduler();
@@ -113,11 +145,10 @@ void loop()
 {
 }
 
-uint8_t serialReadData[6] = {0};
-
-void serialTask(void *pvParameters)
+void serialReadTask(void *pvParameters)
 {
   serialsys.setupProcess();
+  _userSerial._sysUartCanUse = true;
 
   while (true)
   {

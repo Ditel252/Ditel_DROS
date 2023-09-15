@@ -5,9 +5,9 @@
 =======================================*/
 
 #include <Arduino.h>
+#include <STM32FreeRTOS.h>
 
 #define ADDRESS 1
-
 
 #define HEAD_WORD                   254
 #define NO_SEND_DATA                242
@@ -19,22 +19,26 @@
 #define COMMAND_COMMUNICATION_END   202
 #define COMMAND_DECLARE_EMERGENCY   203
 
-#define MEMORY_SIZE_SERIAL_TASK 128
-#define MEMORY_SIZE_USER_PROGRAM_TASK 128
+#define MEMORY_SIZE_SERIAL_READ_TASK    128
+#define MEMORY_SIZE_USER_PROGRAM_TASK   128
+
+#define CONTINUOUS_SEND_BUFFER_TIME 50
 
 #define _serial _userSerial
 
-class Ditel_serial{
+class Ditel_serial
+{
 private:
-
 public:
     uint8_t _sysReadData[6] = {0};
 
-    bool _sysAvaiable =     false;
-    bool _sysStarted =      false;
-    bool _sysEmergency =    false;
+    bool _sysAvaiable = false;
+    bool _sysStarted = false;
+    bool _sysEmergency = false;
+    bool _sysUartCanUse = false;
 
-    void sendCommand(uint8_t _sendCommandContents){
+    void sendCommand(uint8_t _sendCommandContents)
+    {
         char sendCommandContents[7];
 
         sendCommandContents[0] = HEAD_WORD;
@@ -46,11 +50,15 @@ public:
 
         sendCommandContents[6] = '\0';
 
+        while (_sysUartCanUse == false)
+            vTaskDelay(10);
+
         Serial.println(sendCommandContents);
     }
 
     void send(uint8_t *_sendDataContents)
     {
+
         char sendDataContents[7];
 
         sendDataContents[0] = _sendDataContents[0];
@@ -60,10 +68,16 @@ public:
 
         sendDataContents[6] = '\0';
 
+        while (_sysUartCanUse == false)
+            vTaskDelay(10);
+
         Serial.println(sendDataContents);
+
+        vTaskDelay(CONTINUOUS_SEND_BUFFER_TIME / portTICK_RATE_MS);
     }
 
-    bool sendInt(uint8_t _sendCommand_Int, int _sendInt){
+    bool sendInt(uint8_t _sendCommand_Int, int _sendInt)
+    {
         uint8_t _sendData_Int[6] = {0};
 
         _sendData_Int[0] = HEAD_WORD;
@@ -81,7 +95,8 @@ public:
         _sendData_Int[5] = (int)(_sendInt);
         _sendInt -= _sendData_Int[5];
 
-        if(_sendInt != 0){
+        if (_sendInt != 0)
+        {
             return false;
         }
 
@@ -90,34 +105,41 @@ public:
         return true;
     }
 
-    bool started(){
-        if(_sysStarted == true)
-            delay(10);
-        
+    bool started()
+    {
+        if (_sysStarted == true)
+            vTaskDelay(10);
+
         return _sysStarted;
     }
 
-    bool avaiable(){
-        if(_sysAvaiable == true){
+    bool avaiable()
+    {
+        if (_sysAvaiable == true)
+        {
             _sysAvaiable = false;
 
+            vTaskDelay(10);
             return true;
-        }else{
+        }
+        else
+        {
             return false;
         }
-
-        delay(10);
     }
 
-    uint8_t *read(){
+    uint8_t *read()
+    {
         return _sysReadData;
     }
 
-    uint8_t readCommand(){
+    uint8_t readCommand()
+    {
         return _sysReadData[1];
     }
 
-    int *readInt(){
+    int *readInt()
+    {
         int _readInt;
         int *_sysReadInt;
 
@@ -128,7 +150,8 @@ public:
         return _sysReadInt;
     }
 
-    uint8_t stateOfEmergency(){
+    uint8_t stateOfEmergency()
+    {
         return _sysEmergency;
     }
 };
