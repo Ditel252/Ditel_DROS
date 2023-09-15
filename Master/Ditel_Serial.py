@@ -63,7 +63,7 @@ class ditelSerial:
     def __init__(self, _sysAddress:int, _sysPortName:str):
         self.portName:str = _sysPortName
         self._serialAvaiableVariable:bool = False
-        self._serialAvaiableVariableToBypass:bool = False
+        self._readDataIsReturnData:bool =   False
 
         self._log_condition:bool = False
         self._log_contents:str = None
@@ -84,7 +84,6 @@ class ditelSerial:
 
                 if(sysReadData[0] == HEAD_WORD):
                     self._serialAvaiableVariable = True
-                    self._serialAvaiableVariableToBypass = True
 
                     self.rxLogPrint(sysReadData[0], sysReadData[1], sysReadData[2], sysReadData[3], sysReadData[4], sysReadData[5])
                     
@@ -114,6 +113,9 @@ class ditelSerial:
     def send(self, _sendData:bytes):
         while (bypass[self.useAddress].toTxUse != True):
             time.sleep(0.001)
+        
+        self._readDataIsReturnData = True
+        
         bypass[self.useAddress].toTxUse = False
         self.serialModule.write(bytes([int(_sendData[0])]))
         self.serialModule.write(bytes([int(_sendData[1] + COMMUNICATION_BASE_VALUE)]))
@@ -125,12 +127,16 @@ class ditelSerial:
         self.txLogPrint(_sendData[0], _sendData[1] + COMMUNICATION_BASE_VALUE, _sendData[2] + COMMUNICATION_BASE_VALUE, _sendData[3] + COMMUNICATION_BASE_VALUE, _sendData[4] + COMMUNICATION_BASE_VALUE, _sendData[5] + COMMUNICATION_BASE_VALUE)
 
         _readReturnDataTime = 0
-        while(self.avaiable() == False):
+        while(self._serialAvaiableVariable == False):
             if(_readReturnDataTime >= 15):
                 break
         
             time.sleep(0.02)
             _readReturnDataTime += 1
+
+        self._serialAvaiableVariable = False
+
+        self._readDataIsReturnData = False
         
         if(_readReturnDataTime < 15):
             _returnData = self.read()
@@ -145,37 +151,16 @@ class ditelSerial:
             return False
         
     def sendCommand(self, _command:bytes):
-        while (bypass[self.useAddress].toTxUse != True):
-            time.sleep(0.001)
-        bypass[self.useAddress].toTxUse = False
-        self.serialModule.write(bytes([int(HEAD_WORD)]))
-        self.serialModule.write(bytes([int(_command + COMMUNICATION_BASE_VALUE)]))
-        self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
-        self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
-        self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
-        self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
+        _sendData_Command:bytes = [None]*6
 
-        self.txLogPrint(HEAD_WORD, _command + COMMUNICATION_BASE_VALUE, NO_SEND_DATA + COMMUNICATION_BASE_VALUE, NO_SEND_DATA + COMMUNICATION_BASE_VALUE, NO_SEND_DATA + COMMUNICATION_BASE_VALUE, NO_SEND_DATA + COMMUNICATION_BASE_VALUE)
+        _sendData_Command[0] = HEAD_WORD
+        _sendData_Command[1] = _command
+        _sendData_Command[2] = NO_SEND_DATA
+        _sendData_Command[3] = NO_SEND_DATA
+        _sendData_Command[4] = NO_SEND_DATA
+        _sendData_Command[5] = NO_SEND_DATA
 
-        _readReturnDataTime = 0
-        while(self.avaiable() == False):
-            if(_readReturnDataTime >= 15):
-                break
-        
-            time.sleep(0.02)
-            _readReturnDataTime += 1
-        
-        if(_readReturnDataTime < 15):
-            _returnData = self.read()
-            bypass[self.useAddress].toTxUse = True
-
-            if((_returnData[0] == HEAD_WORD) and (_returnData[1] == _command + 10)):
-                return True
-            else:
-                return False
-        else:
-            bypass[self.useAddress].toTxUse = True
-            return False
+        return self.send(_sendData_Command)
         
     def sendInt(self, _sendIntCommand:bytes, _sendInt:int):
         _sendData_Int:bytes = [None]*6
@@ -218,7 +203,7 @@ class ditelSerial:
         return _readInt
 
     def avaiable(self):
-        if(self._serialAvaiableVariable == True):
+        if((self._serialAvaiableVariable == True) and (self._readDataIsReturnData == False)):
             self._serialAvaiableVariable = False
             return True
         else:

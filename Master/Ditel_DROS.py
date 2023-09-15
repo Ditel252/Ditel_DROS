@@ -1,6 +1,6 @@
 """=======================================
 <Ditel Robot Operateting System>
-バージョン : v1.1.15
+バージョン : v1.1.16
 ======================================="""
 
 import tkinter
@@ -36,7 +36,7 @@ import User_Programs.Main_program as addMain
 
 #===============↓↓定数の宣言(ここから)↓↓===============
 #バージョン設定
-VERSION = "1.1.15"
+VERSION = "1.1.16"
 
 #window1の大きさとタイトルの設定
 WINDOW1_HEIGHT =    1920                                        #高さ
@@ -3339,7 +3339,7 @@ class userPrograms:
         self.addressProgram[0]._setup()
 
         while Ditel_DROS_Kernel.threadCondition:
-            self.addressProgram[0]._loop()
+            self.addressProgram[0]._loobypass[1].p()
             time.sleep(USER_PROGURAM_PERIOD)
         
 #==============↑↑UserProgram関係(ここまで)↑↑===============
@@ -3357,9 +3357,10 @@ class _bypass:
                     try:
                         Ditel_System_Bypass.bypass[_i].readData = programsys.addressProgram[_i]._serial.read()
 
-                        if(programsys.addressProgram[_i]._serial._serialAvaiableVariableToBypass != False):
-                            Ditel_System_Bypass.bypass[_i].avaiableData = programsys.addressProgram[_i]._serial._serialAvaiableVariableToBypass
-                            programsys.addressProgram[_i]._serial._serialAvaiableVariableToBypass = False
+                        if(Ditel_System_Bypass.bypass[_i].requestAvaiableData == True):
+                            Ditel_System_Bypass.bypass[_i].avaiableData = programsys.addressProgram[_i]._serial.avaiable()
+
+                            Ditel_System_Bypass.bypass[_i].requestAvaiableData = False
                     except:
                         pass
                     

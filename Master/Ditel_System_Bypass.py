@@ -9,6 +9,7 @@ class ditelSystemBypass:
     def __init__(self, _address:int):
         self.avaiableData:bool = False
         self.toTxUse:bool = True
+        self.requestAvaiableData:bool = False
         self.requestSendData:bool = False
         self.readData:bytes = [None] * 6
         self.sendData:bytes = [None] * 6
@@ -30,11 +31,12 @@ class ditelSystemBypass:
         return _readInt
     
     def avaiable(self):
-        if(self.avaiableData == True):
-            self.avaiableData = False
-            return True
-        else:
-            return False
+        self.requestAvaiableData = True
+
+        while(self.requestAvaiableData == True):
+            time.sleep(0.001)
+
+        return self.avaiableData
     
     def sendCommand(self, _command:bytes):
         while ((self.requestSendData != False) and (threadCondition == True)):
