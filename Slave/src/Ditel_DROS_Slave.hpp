@@ -47,7 +47,6 @@ public:
         sendCommandContents[6] = '\0';
 
         Serial.println(sendCommandContents);
-        delay(10);
     }
 
     void send(uint8_t *_sendDataContents)
@@ -62,7 +61,6 @@ public:
         sendDataContents[6] = '\0';
 
         Serial.println(sendDataContents);
-        delay(10);
     }
 
     bool sendInt(uint8_t _sendCommand_Int, int _sendInt){
@@ -107,6 +105,8 @@ public:
         }else{
             return false;
         }
+
+        delay(10);
     }
 
     uint8_t *read(){

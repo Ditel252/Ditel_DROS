@@ -199,9 +199,7 @@ class ditelSerial:
             self.logPrint(False, "send int data")
             return False
 
-        self.send(_sendData_Int)
-
-        return True
+        return self.send(_sendData_Int)
 
 
     def read(self):

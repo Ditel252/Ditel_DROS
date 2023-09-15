@@ -1,11 +1,11 @@
 /*=======================================
 <Ditel Robot Operating System Slave>
 
-version : 1.1.11
+version : 1.1.12
 ユーザーはここにプラグラムを書く
 =======================================*/
 
-#include "Ditel_ROS_Slave.hpp"
+#include "Ditel_DROS_Slave.hpp"
 
 void _setup()
 {
