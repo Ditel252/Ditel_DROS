@@ -109,7 +109,12 @@ public:
     {
         vTaskDelay(10 / portTICK_RATE_MS);
 
-        return _sysStarted;
+        if(_sysStarted == true){
+            vTaskDelay(50 / portTICK_RATE_MS);
+            return true;
+        }
+
+        return false;
     }
 
     bool avaiable()
