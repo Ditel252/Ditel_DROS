@@ -7,7 +7,7 @@
 #include <Arduino.h>
 #include <STM32FreeRTOS.h>
 
-#define ADDRESS 1
+#define ADDRESS 2
 
 #define HEAD_WORD                   254
 #define NO_SEND_DATA                242
@@ -107,19 +107,21 @@ public:
 
     bool started()
     {
+        vTaskDelay(20 / portTICK_RATE_MS);
+
         if (_sysStarted == true)
-            vTaskDelay(10);
 
         return _sysStarted;
     }
 
     bool avaiable()
     {
+        vTaskDelay(10);
+
         if (_sysAvaiable == true)
         {
             _sysAvaiable = false;
 
-            vTaskDelay(10);
             return true;
         }
         else
@@ -130,16 +132,19 @@ public:
 
     uint8_t *read()
     {
+        _sysAvaiable = false;
         return _sysReadData;
     }
 
     uint8_t readCommand()
     {
+        _sysAvaiable = false;
         return _sysReadData[1];
     }
 
     int *readInt()
     {
+        _sysAvaiable = false;
         int _readInt;
         int *_sysReadInt;
 
