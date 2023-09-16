@@ -1,6 +1,6 @@
 """=======================================
 <Ditel Robot Operateting System>
-バージョン : v1.1.16
+バージョン : v1.1.17
 ======================================="""
 
 import tkinter
@@ -36,7 +36,7 @@ import User_Programs.Main_program as addMain
 
 #===============↓↓定数の宣言(ここから)↓↓===============
 #バージョン設定
-VERSION = "1.1.16"
+VERSION = "1.1.17"
 
 #window1の大きさとタイトルの設定
 WINDOW1_HEIGHT =    1920                                        #高さ
@@ -3339,7 +3339,7 @@ class userPrograms:
         self.addressProgram[0]._setup()
 
         while Ditel_DROS_Kernel.threadCondition:
-            self.addressProgram[0]._loobypass[1].p()
+            self.addressProgram[0]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
         
 #==============↑↑UserProgram関係(ここまで)↑↑===============
