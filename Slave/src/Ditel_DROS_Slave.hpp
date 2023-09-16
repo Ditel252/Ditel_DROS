@@ -7,7 +7,7 @@
 #include <Arduino.h>
 #include <STM32FreeRTOS.h>
 
-#define ADDRESS 2
+#define ADDRESS 1
 
 #define HEAD_WORD                   254
 #define NO_SEND_DATA                242
@@ -51,7 +51,7 @@ public:
         sendCommandContents[6] = '\0';
 
         while (_sysUartCanUse == false)
-            vTaskDelay(10);
+            vTaskDelay(10 / portTICK_RATE_MS);
 
         Serial.println(sendCommandContents);
     }
@@ -69,7 +69,7 @@ public:
         sendDataContents[6] = '\0';
 
         while (_sysUartCanUse == false)
-            vTaskDelay(10);
+            vTaskDelay(10 / portTICK_RATE_MS);
 
         Serial.println(sendDataContents);
 
@@ -107,16 +107,14 @@ public:
 
     bool started()
     {
-        vTaskDelay(20 / portTICK_RATE_MS);
-
-        if (_sysStarted == true)
+        vTaskDelay(10 / portTICK_RATE_MS);
 
         return _sysStarted;
     }
 
     bool avaiable()
     {
-        vTaskDelay(10);
+        vTaskDelay(10 / portTICK_RATE_MS);
 
         if (_sysAvaiable == true)
         {
