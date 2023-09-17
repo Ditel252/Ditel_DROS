@@ -91,7 +91,8 @@ class ditelSerial:
                     for _i in range(1, 6, 1):
                         self.readData[_i] = sysReadData[_i] - COMMUNICATION_BASE_VALUE
 
-                    if(sysReadData[1] == COMMAND_DECLARE_EMERGENCY):
+                    if(self.readData[1] == COMMAND_DECLARE_EMERGENCY):
+                        Ditel_DROS_Kernel._stateOfEmergency = True
                         Ditel_DROS_Kernel.addressWhereSendEmergency = self.useAddress
                 else:
                     pass
@@ -228,3 +229,6 @@ class ditelSerial:
                 return False
         else:
             return False
+        
+    def stateOfEmergency(self):
+        return Ditel_DROS_Kernel._stateOfEmergency

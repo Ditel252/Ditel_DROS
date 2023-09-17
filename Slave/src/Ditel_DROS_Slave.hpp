@@ -37,25 +37,6 @@ public:
     bool _sysEmergency = false;
     bool _sysUartCanUse = false;
 
-    void sendCommand(uint8_t _sendCommandContents)
-    {
-        char sendCommandContents[7];
-
-        sendCommandContents[0] = HEAD_WORD;
-        sendCommandContents[1] = _sendCommandContents + COMMUNICATION_BASE_VALUE;
-        sendCommandContents[2] = NO_SEND_DATA + COMMUNICATION_BASE_VALUE;
-        sendCommandContents[3] = NO_SEND_DATA + COMMUNICATION_BASE_VALUE;
-        sendCommandContents[4] = NO_SEND_DATA + COMMUNICATION_BASE_VALUE;
-        sendCommandContents[5] = NO_SEND_DATA + COMMUNICATION_BASE_VALUE;
-
-        sendCommandContents[6] = '\0';
-
-        while (_sysUartCanUse == false)
-            vTaskDelay(10 / portTICK_RATE_MS);
-
-        Serial.println(sendCommandContents);
-    }
-
     void send(uint8_t *_sendDataContents)
     {
 
@@ -73,10 +54,27 @@ public:
 
         Serial.println(sendDataContents);
 
+        if(_sendDataContents[1] == COMMAND_DECLARE_EMERGENCY)
+            _sysEmergency = true;
+
         vTaskDelay(CONTINUOUS_SEND_BUFFER_TIME / portTICK_RATE_MS);
     }
 
-    bool sendInt(uint8_t _sendCommand_Int, int _sendInt)
+    void sendCommand(uint8_t _sendCommandContents)
+    {
+        uint8_t sendCommandContents[6];
+
+        sendCommandContents[0] = HEAD_WORD;
+        sendCommandContents[1] = _sendCommandContents;
+        sendCommandContents[2] = NO_SEND_DATA;
+        sendCommandContents[3] = NO_SEND_DATA;
+        sendCommandContents[4] = NO_SEND_DATA;
+        sendCommandContents[5] = NO_SEND_DATA;
+
+        send(sendCommandContents);
+    }
+
+    void sendInt(uint8_t _sendCommand_Int, int _sendInt)
     {
         uint8_t _sendData_Int[6] = {0};
 
@@ -95,14 +93,7 @@ public:
         _sendData_Int[5] = (int)(_sendInt);
         _sendInt -= _sendData_Int[5];
 
-        if (_sendInt != 0)
-        {
-            return false;
-        }
-
         send(_sendData_Int);
-
-        return true;
     }
 
     bool started()

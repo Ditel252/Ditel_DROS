@@ -1,6 +1,6 @@
 """=======================================
 <Ditel Robot Operateting System>
-バージョン : v1.1.21
+バージョン : v1.1.22
 ======================================="""
 
 import tkinter
@@ -36,7 +36,7 @@ import User_Programs.Main_program as addMain
 
 #===============↓↓定数の宣言(ここから)↓↓===============
 #バージョン設定
-VERSION = "1.1.21"
+VERSION = "1.1.22"
 
 #window1の大きさとタイトルの設定
 WINDOW1_HEIGHT =    1920                                        #高さ
@@ -3405,12 +3405,12 @@ class _emergency:
                         self.emergencySendResult = "orange"
                     
                     if(self.emergencySendResult == "orange"):
-                        mainWindow.logPrint(_i, True, "send1 of emergency declaration")
+                        mainWindow.logPrint(_i, True, "send of emergency declaration")
                     elif(self.emergencySendResult == "#ff0000"):
-                        mainWindow.logPrint(_i, False, "send2 of emergency declaration")
+                        mainWindow.logPrint(_i, False, "send of emergency declaration")
 
                 except:
-                    mainWindow.logPrint(_i, False, "send3 of emergency declaration")
+                    mainWindow.logPrint(_i, False, "send of emergency declaration")
                     self.emergencySendResult = "#ff0000"
                 
                 match _i:
