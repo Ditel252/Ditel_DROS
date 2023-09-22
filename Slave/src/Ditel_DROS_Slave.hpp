@@ -178,6 +178,21 @@ public:
     {
         return _sysEmergency;
     }
+
+    int *convertToInt(uint8_t *_convertData){
+        int *_result;
+        signed long int _sysResultIntData;
+
+        *_result = *(_convertData + 1);
+
+        _sysResultIntData = *(_convertData + 2) * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX + *(_convertData + 3) * INT_UNIT_MAX * INT_UNIT_MAX + *(_convertData + 4) * INT_UNIT_MAX + *(_convertData + 5);
+
+        _sysResultIntData -= SEND_INT_BASE;
+
+        *(_result + 1) = _sysResultIntData;
+
+        return _result;
+    }
 };
 
 Ditel_serial _userSerial;

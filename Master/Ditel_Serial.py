@@ -243,3 +243,13 @@ class ditelSerial:
         
     def stateOfEmergency(self):
         return Ditel_DROS_Kernel._stateOfEmergency
+    
+    def convertToInt(self, _convertData:bytes):
+        _result:int = [None]*2
+
+        _result[0] = _convertData[1]
+        _result[1] = _convertData[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX + _convertData[3] * INT_UNIT_MAX * INT_UNIT_MAX + _convertData[4] * INT_UNIT_MAX + _convertData[5]
+
+        _result[1] -= SEND_INT_BASE
+
+        return _result
