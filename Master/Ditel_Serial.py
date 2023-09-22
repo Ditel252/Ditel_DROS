@@ -16,6 +16,10 @@ COMMAND_COMMUNICATION_BEGIN =   201
 COMMAND_COMMUNICATION_END =     202
 COMMAND_DECLARE_EMERGENCY =     203
 
+SEND_INT_MAX =  1600000000
+SEND_INT_MIN =  -1600000000
+SEND_INT_BASE = 1600000000
+
 def addressRead(_portName:str):
         serial1 = serial.Serial(_portName, 115200, timeout=0.2)
 
@@ -166,6 +170,11 @@ class ditelSerial:
     def sendInt(self, _sendIntCommand:bytes, _sendInt:int):
         _sendData_Int:bytes = [None]*6
 
+        if(_sendInt > SEND_INT_MAX or _sendInt < SEND_INT_MIN):
+            return False
+
+        _sendInt += SEND_INT_BASE
+
         _sendData_Int[0] = HEAD_WORD
         _sendData_Int[1] = _sendIntCommand
 
@@ -200,6 +209,8 @@ class ditelSerial:
 
         _readInt[0] = _readData_Int[1]
         _readInt[1] = (_readData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX) + (_readData_Int[3] * INT_UNIT_MAX * INT_UNIT_MAX) + (_readData_Int[4] * INT_UNIT_MAX) + _readData_Int[5]
+
+        _readInt[1] -= SEND_INT_BASE
         
         return _readInt
 

@@ -9,20 +9,24 @@
 
 #define ADDRESS 1
 
-#define HEAD_WORD                   254
-#define NO_SEND_DATA                242
-#define INT_UNIT_MAX                241
-#define COMMUNICATION_BASE_VALUE    11
+#define HEAD_WORD 254
+#define NO_SEND_DATA 242
+#define INT_UNIT_MAX 241
+#define COMMUNICATION_BASE_VALUE 11
 
-#define COMMAND_CHECK_ADDRESS       200
+#define COMMAND_CHECK_ADDRESS 200
 #define COMMAND_COMMUNICATION_BEGIN 201
-#define COMMAND_COMMUNICATION_END   202
-#define COMMAND_DECLARE_EMERGENCY   203
+#define COMMAND_COMMUNICATION_END 202
+#define COMMAND_DECLARE_EMERGENCY 203
 
-#define MEMORY_SIZE_SERIAL_READ_TASK    128
-#define MEMORY_SIZE_USER_PROGRAM_TASK   128
+#define MEMORY_SIZE_SERIAL_READ_TASK 128
+#define MEMORY_SIZE_USER_PROGRAM_TASK 128
 
 #define CONTINUOUS_SEND_BUFFER_TIME 50
+
+#define SEND_INT_MAX 1600000000
+#define SEND_INT_MIN -1600000000
+#define SEND_INT_BASE 1600000000
 
 #define _serial _userSerial
 
@@ -37,7 +41,7 @@ public:
     bool _sysEmergency = false;
     bool _sysUartCanUse = false;
 
-    void send(uint8_t *_sendDataContents)
+    bool send(uint8_t *_sendDataContents)
     {
 
         char sendDataContents[7];
@@ -45,7 +49,11 @@ public:
         sendDataContents[0] = _sendDataContents[0];
 
         for (int _i = 1; _i < 6; _i++)
+        {
+            if (_sendDataContents[_i] >= HEAD_WORD)
+                return false;
             sendDataContents[_i] = _sendDataContents[_i] + COMMUNICATION_BASE_VALUE;
+        }
 
         sendDataContents[6] = '\0';
 
@@ -54,13 +62,15 @@ public:
 
         Serial.println(sendDataContents);
 
-        if(_sendDataContents[1] == COMMAND_DECLARE_EMERGENCY)
+        if (_sendDataContents[1] == COMMAND_DECLARE_EMERGENCY)
             _sysEmergency = true;
 
         vTaskDelay(CONTINUOUS_SEND_BUFFER_TIME / portTICK_RATE_MS);
+
+        return true;
     }
 
-    void sendCommand(uint8_t _sendCommandContents)
+    bool sendCommand(uint8_t _sendCommandContents)
     {
         uint8_t sendCommandContents[6];
 
@@ -71,13 +81,18 @@ public:
         sendCommandContents[4] = NO_SEND_DATA;
         sendCommandContents[5] = NO_SEND_DATA;
 
-        send(sendCommandContents);
+        return send(sendCommandContents);
     }
 
-    void sendInt(uint8_t _sendCommand_Int, int _sendInt)
+    bool sendInt(uint8_t _sendCommand_Int, int _sendInt)
     {
         uint8_t _sendData_Int[6] = {0};
 
+        if (_sendInt > SEND_INT_MAX || _sendInt < SEND_INT_MIN)
+            return false;
+
+        _sendInt += SEND_INT_BASE;
+        
         _sendData_Int[0] = HEAD_WORD;
         _sendData_Int[1] = _sendCommand_Int;
 
@@ -93,14 +108,15 @@ public:
         _sendData_Int[5] = (int)(_sendInt);
         _sendInt -= _sendData_Int[5];
 
-        send(_sendData_Int);
+        return send(_sendData_Int);
     }
 
     bool started()
     {
         vTaskDelay(10 / portTICK_RATE_MS);
 
-        if(_sysStarted == true){
+        if (_sysStarted == true)
+        {
             vTaskDelay(50 / portTICK_RATE_MS);
             return true;
         }
