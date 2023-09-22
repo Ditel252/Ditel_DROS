@@ -7,6 +7,12 @@ from Ditel_Serial import *
 from Ditel_System_Bypass import bypass
 from User_Programs.Data_Bypass import dataBypass
 
+
+#===============↓↓User記入(ここから)↓↓===============
+
+#===============↑↑User記入(ここまで)↑↑===============
+
+
 class program:
 #===============↓↓User記入(ここから)↓↓===============
 

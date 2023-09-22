@@ -7,6 +7,12 @@ from Ditel_Serial import *
 from Ditel_System_Bypass import bypass
 from User_Programs.Data_Bypass import dataBypass
 
+
+#===============↓↓User記入(ここから)↓↓===============
+
+#===============↑↑User記入(ここまで)↑↑===============
+
+
 class program:
 #===============↓↓User記入(ここから)↓↓===============
 
@@ -17,7 +23,6 @@ class program:
         pass
 
     def _loop(self):    #_setup関数が終了した後に実行される関数, 関数は無条件ループする
-        self._serial.sendCommand(204)
-        time.sleep(1)
+        pass
 
 #===============↑↑User記入(ここまで)↑↑===============
