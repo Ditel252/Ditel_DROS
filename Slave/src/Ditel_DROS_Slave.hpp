@@ -86,27 +86,31 @@ public:
 
     bool sendInt(uint8_t _sendCommand_Int, int _sendInt)
     {
+        signed long int _IntData;
+
         uint8_t _sendData_Int[6] = {0};
 
         if (_sendInt > SEND_INT_MAX || _sendInt < SEND_INT_MIN)
             return false;
 
-        _sendInt += SEND_INT_BASE;
+        _IntData = _sendInt;
+
+        _IntData += SEND_INT_BASE;
         
         _sendData_Int[0] = HEAD_WORD;
         _sendData_Int[1] = _sendCommand_Int;
 
-        _sendData_Int[2] = (int)(_sendInt / (INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX));
-        _sendInt -= _sendData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX;
+        _sendData_Int[2] = (int)(_IntData / (INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX));
+        _IntData -= _sendData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX;
 
-        _sendData_Int[3] = (int)(_sendInt / (INT_UNIT_MAX * INT_UNIT_MAX));
-        _sendInt -= _sendData_Int[3] * INT_UNIT_MAX * INT_UNIT_MAX;
+        _sendData_Int[3] = (int)(_IntData / (INT_UNIT_MAX * INT_UNIT_MAX));
+        _IntData -= _sendData_Int[3] * INT_UNIT_MAX * INT_UNIT_MAX;
 
-        _sendData_Int[4] = (int)(_sendInt / (INT_UNIT_MAX));
-        _sendInt -= _sendData_Int[4] * INT_UNIT_MAX;
+        _sendData_Int[4] = (int)(_IntData / (INT_UNIT_MAX));
+        _IntData -= _sendData_Int[4] * INT_UNIT_MAX;
 
-        _sendData_Int[5] = (int)(_sendInt);
-        _sendInt -= _sendData_Int[5];
+        _sendData_Int[5] = (int)(_IntData);
+        _IntData -= _sendData_Int[5];
 
         return send(_sendData_Int);
     }
@@ -157,10 +161,15 @@ public:
         _sysAvaiable = false;
         int _readInt;
         int *_sysReadInt;
+        signed long int _sysIntData;
 
         *_sysReadInt = _sysReadData[1];
+        
+        _sysIntData = _sysReadData[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX + _sysReadData[3] * INT_UNIT_MAX * INT_UNIT_MAX + _sysReadData[4] * INT_UNIT_MAX + _sysReadData[5];
 
-        *(_sysReadInt + 1) = _sysReadData[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX + _sysReadData[3] * INT_UNIT_MAX * INT_UNIT_MAX + _sysReadData[4] * INT_UNIT_MAX + _sysReadData[5];
+        _sysIntData -= SEND_INT_BASE;
+
+        *(_sysReadInt + 1) = _sysIntData;
 
         return _sysReadInt;
     }

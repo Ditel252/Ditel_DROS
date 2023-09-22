@@ -5,6 +5,10 @@ HEAD_WORD =     254
 NO_SEND_DATA =  242
 INT_UNIT_MAX =  241
 
+SEND_INT_MAX =  1600000000
+SEND_INT_MIN =  -1600000000
+SEND_INT_BASE = 1600000000
+
 class ditelSystemBypass:
     def __init__(self, _address:int):
         self.avaiableData:bool = False
@@ -27,6 +31,8 @@ class ditelSystemBypass:
 
         _readInt[0] = _readData_Int[1]
         _readInt[1] = _readData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX + _readData_Int[3] * INT_UNIT_MAX * INT_UNIT_MAX + _readData_Int[4] * INT_UNIT_MAX + _readData_Int[5]
+
+        _readInt[1] -= SEND_INT_BASE
         
         return _readInt
     
@@ -57,6 +63,11 @@ class ditelSystemBypass:
             self.sendData[_i] = _sendData[_i]
     
     def sendInt(self, _sendIntCommand:bytes, _sendInt:int):
+        if(_sendInt > SEND_INT_MAX or _sendInt < SEND_INT_MIN):
+            return False
+        
+        _sendInt += SEND_INT_BASE
+
         _sendData_Int:bytes = [None]*6
 
         _sendData_Int[0] = HEAD_WORD

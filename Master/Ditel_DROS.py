@@ -1,6 +1,6 @@
 """=======================================
 <Ditel Robot Operateting System>
-バージョン : v1.1.23
+バージョン : v1.1.24
 ======================================="""
 
 import tkinter
@@ -36,7 +36,7 @@ import User_Programs.Main_program as addMain
 
 #===============↓↓定数の宣言(ここから)↓↓===============
 #バージョン設定
-VERSION = "1.1.23"
+VERSION = "1.1.24"
 
 #window1の大きさとタイトルの設定
 WINDOW1_HEIGHT =    1920                                        #高さ
