@@ -1,14 +1,14 @@
 /*=======================================
 <Ditel Robot Operating System Slave>
 
-version : 1.1.27
+version : 1.1.28
 許可された箇所以外変更禁止
 =======================================*/
 
 #include <Arduino.h>
 #include <STM32FreeRTOS.h>
 
-#define ADDRESS 1   //(変更可)アドレスを設定する
+#define ADDRESS 1 //(変更可)アドレスを設定する
 
 #define HEAD_WORD 254
 #define NO_SEND_DATA 242
@@ -31,9 +31,15 @@ version : 1.1.27
 
 #define _serial _userSerial
 
+bool _readDataIsReturnData = false;
+
 class Ditel_serial
 {
 private:
+    int _returnDataTime = 0;
+    uint8_t *_returnData;
+    bool _lastAvaiable = false;
+
     uint8_t *_result_read;
     uint8_t _sysResultData_read[6];
 
@@ -72,14 +78,63 @@ public:
         while (_sysUartCanUse == false)
             vTaskDelay(10 / portTICK_RATE_MS);
 
+        _lastAvaiable = _sysAvaiable;
+        _sysAvaiable = false;
+
         Serial.println(sendDataContents);
 
         if (_sendDataContents[1] == COMMAND_DECLARE_EMERGENCY)
             _sysEmergency = true;
 
-        vTaskDelay(CONTINUOUS_SEND_BUFFER_TIME / portTICK_RATE_MS);
+        _readDataIsReturnData = true;
 
-        return true;
+        _returnDataTime = 0;
+
+        while (_sysAvaiable == false)
+        {
+            if (_returnDataTime >= 30)
+                break;
+
+            vTaskDelay(10 / portTICK_RATE_MS);
+            _returnDataTime++;
+        }
+
+        if (_returnDataTime < 30)
+        {
+            *(_returnData + 0) = *(_sysReadData + 0);
+            *(_returnData + 1) = *(_sysReadData + 1);
+            *(_returnData + 2) = *(_sysReadData + 2);
+            *(_returnData + 3) = *(_sysReadData + 3);
+            *(_returnData + 4) = *(_sysReadData + 4);
+            *(_returnData + 5) = *(_sysReadData + 5);
+
+            _readDataIsReturnData = false;
+
+            if ((*_sendDataContents == *_returnData) && ((*(_sendDataContents + 1) + 10) == *(_returnData + 1)) && (*(_sendDataContents + 2) == *(_returnData + 2)) && (*(_sendDataContents + 3) == *(_returnData + 3)) && (*(_sendDataContents + 4) == *(_returnData + 4)) && (*(_sendDataContents + 5) == *(_returnData + 5)))
+            {
+                vTaskDelay(CONTINUOUS_SEND_BUFFER_TIME / portTICK_RATE_MS);
+
+                return true;
+            }
+            else
+            {
+                _readDataIsReturnData = false;
+                _sysAvaiable = _lastAvaiable;
+
+                vTaskDelay(CONTINUOUS_SEND_BUFFER_TIME / portTICK_RATE_MS);
+
+                return false;
+            }
+        }
+        else
+        {
+            _readDataIsReturnData = false;
+            _sysAvaiable = _lastAvaiable;
+
+            vTaskDelay(CONTINUOUS_SEND_BUFFER_TIME / portTICK_RATE_MS);
+
+            return false;
+        }
     }
 
     bool sendCommand(uint8_t _sendCommandContents)
@@ -148,7 +203,10 @@ public:
         {
             _sysAvaiable = false;
 
-            return true;
+            if (_readDataIsReturnData == false)
+                return true;
+            else
+                return false;
         }
         else
         {
@@ -160,12 +218,15 @@ public:
     {
         _sysAvaiable = false;
 
-        _sysResultData_read[0] = *(_sysReadData + 0);
-        _sysResultData_read[1] = *(_sysReadData + 1);
-        _sysResultData_read[2] = *(_sysReadData + 2);
-        _sysResultData_read[3] = *(_sysReadData + 3);
-        _sysResultData_read[4] = *(_sysReadData + 4);
-        _sysResultData_read[5] = *(_sysReadData + 5);
+        if (_readDataIsReturnData == false)
+        {
+            _sysResultData_read[0] = *(_sysReadData + 0);
+            _sysResultData_read[1] = *(_sysReadData + 1);
+            _sysResultData_read[2] = *(_sysReadData + 2);
+            _sysResultData_read[3] = *(_sysReadData + 3);
+            _sysResultData_read[4] = *(_sysReadData + 4);
+            _sysResultData_read[5] = *(_sysReadData + 5);
+        }
 
         _result_read = &_sysResultData_read[0];
 

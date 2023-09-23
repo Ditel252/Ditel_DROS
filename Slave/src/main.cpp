@@ -47,11 +47,11 @@ public:
           _sendDataContents[0] = sysSerialSendData[0];
 
           for (int _i = 1; _i < 6; _i++)
-              _sendDataContents[_i] = sysSerialSendData[_i] + COMMUNICATION_BASE_VALUE;
+            _sendDataContents[_i] = sysSerialSendData[_i] + COMMUNICATION_BASE_VALUE;
 
           _sendDataContents[6] = '\0';
 
-        Serial.println(_sendDataContents);
+          Serial.println(_sendDataContents);
         }
         else if (sysSerialReadData[1] == COMMAND_COMMUNICATION_BEGIN)
         {
@@ -66,7 +66,7 @@ public:
           _sendDataContents[0] = sysSerialSendData[0];
 
           for (int _i = 1; _i < 6; _i++)
-              _sendDataContents[_i] = sysSerialSendData[_i] + COMMUNICATION_BASE_VALUE;
+            _sendDataContents[_i] = sysSerialSendData[_i] + COMMUNICATION_BASE_VALUE;
 
           _sendDataContents[6] = '\0';
 
@@ -97,7 +97,7 @@ public:
       _userSerial._sysUartCanUse = false;
 
       vTaskDelay(10 / portTICK_RATE_MS);
-      
+
       _userSerial._sysReadData[0] = sysSerialReadData[0];
       for (int _i = 1; _i < 6; _i++)
         _userSerial._sysReadData[_i] = sysSerialReadData[_i];
@@ -120,7 +120,8 @@ public:
 
       _userSerial._sysAvaiable = true;
 
-      Serial.println(_sendDataContents);
+      if (_readDataIsReturnData == false)
+        Serial.println(_sendDataContents);
 
       vTaskDelay(CONTINUOUS_SEND_BUFFER_TIME / portTICK_RATE_MS);
 

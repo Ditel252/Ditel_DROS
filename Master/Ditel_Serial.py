@@ -95,6 +95,22 @@ class ditelSerial:
                     for _i in range(1, 6, 1):
                         self.readData[_i] = sysReadData[_i] - COMMUNICATION_BASE_VALUE
 
+                    if(self._readDataIsReturnData == False):
+                        while (bypass[self.useAddress].toTxUse != True):
+                            time.sleep(0.001)
+                        
+                        bypass[self.useAddress].toTxUse = False
+                        self.serialModule.write(bytes([int(self.readData[0])]))
+                        self.serialModule.write(bytes([int(self.readData[1] + COMMUNICATION_BASE_VALUE + 10)]))
+                        self.serialModule.write(bytes([int(self.readData[2] + COMMUNICATION_BASE_VALUE)]))
+                        self.serialModule.write(bytes([int(self.readData[3] + COMMUNICATION_BASE_VALUE)]))
+                        self.serialModule.write(bytes([int(self.readData[4] + COMMUNICATION_BASE_VALUE)]))
+                        self.serialModule.write(bytes([int(self.readData[5] + COMMUNICATION_BASE_VALUE)]))
+
+                        self.txLogPrint(self.readData[0], self.readData[1] + COMMUNICATION_BASE_VALUE + 10, self.readData[2] + COMMUNICATION_BASE_VALUE, self.readData[3] + COMMUNICATION_BASE_VALUE, self.readData[4] + COMMUNICATION_BASE_VALUE, self.readData[5] + COMMUNICATION_BASE_VALUE)
+
+                        bypass[self.useAddress].toTxUse = True
+
                     if(self.readData[1] == COMMAND_DECLARE_EMERGENCY):
                         Ditel_DROS_Kernel._stateOfEmergency = True
                         Ditel_DROS_Kernel.addressWhereSendEmergency = self.useAddress
