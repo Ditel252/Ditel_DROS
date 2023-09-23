@@ -1,7 +1,7 @@
 /*=======================================
 <Ditel Robot Operating System Slave>
 
-version : 1.1.28
+version : 1.1.29
 許可された箇所以外変更禁止
 =======================================*/
 
@@ -37,7 +37,7 @@ class Ditel_serial
 {
 private:
     int _returnDataTime = 0;
-    uint8_t *_returnData;
+    uint8_t _returnData[6];
     bool _lastAvaiable = false;
 
     uint8_t *_result_read;
@@ -101,17 +101,20 @@ public:
 
         if (_returnDataTime < 30)
         {
-            *(_returnData + 0) = *(_sysReadData + 0);
-            *(_returnData + 1) = *(_sysReadData + 1);
-            *(_returnData + 2) = *(_sysReadData + 2);
-            *(_returnData + 3) = *(_sysReadData + 3);
-            *(_returnData + 4) = *(_sysReadData + 4);
-            *(_returnData + 5) = *(_sysReadData + 5);
+            _returnData[0]= *(_sysReadData + 0);
+            _returnData[1] = *(_sysReadData + 1);
+            _returnData[2] = *(_sysReadData + 2);
+            _returnData[3] = *(_sysReadData + 3);
+            _returnData[4] = *(_sysReadData + 4);
+            _returnData[5] = *(_sysReadData + 5);
 
             _readDataIsReturnData = false;
 
-            if ((*_sendDataContents == *_returnData) && ((*(_sendDataContents + 1) + 10) == *(_returnData + 1)) && (*(_sendDataContents + 2) == *(_returnData + 2)) && (*(_sendDataContents + 3) == *(_returnData + 3)) && (*(_sendDataContents + 4) == *(_returnData + 4)) && (*(_sendDataContents + 5) == *(_returnData + 5)))
+            if ((*_sendDataContents == _returnData[0]) && ((*(_sendDataContents + 1) + 10) == _returnData[1]) && (*(_sendDataContents + 2) == _returnData[2]) && (*(_sendDataContents + 3) == _returnData[3]) && (*(_sendDataContents + 4) == _returnData[4]) && (*(_sendDataContents + 5) == _returnData[5]))
             {
+                _readDataIsReturnData = false;
+                _sysAvaiable = _lastAvaiable;
+                
                 vTaskDelay(CONTINUOUS_SEND_BUFFER_TIME / portTICK_RATE_MS);
 
                 return true;
