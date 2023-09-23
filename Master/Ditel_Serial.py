@@ -155,6 +155,9 @@ class ditelSerial:
             bypass[self.useAddress].toTxUse = True
             return False
         
+    def unconditional(self):
+        return Ditel_DROS_Kernel.threadCondition
+        
     def sendCommand(self, _command:bytes):
         _sendData_Command:bytes = [None]*6
 

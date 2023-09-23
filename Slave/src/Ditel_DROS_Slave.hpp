@@ -1,14 +1,14 @@
 /*=======================================
 <Ditel Robot Operating System Slave>
 
-version : 1.1.26
-変更禁止
+version : 1.1.27
+許可された箇所以外変更禁止
 =======================================*/
 
 #include <Arduino.h>
 #include <STM32FreeRTOS.h>
 
-#define ADDRESS 1
+#define ADDRESS 1   //(変更可)アドレスを設定する
 
 #define HEAD_WORD 254
 #define NO_SEND_DATA 242
@@ -34,6 +34,17 @@ version : 1.1.26
 class Ditel_serial
 {
 private:
+    uint8_t *_result_read;
+    uint8_t _sysResultData_read[6];
+
+    int *_result_readInt;
+    int _sysResultData_readInt[2];
+    signed long int _sysResultLongIntData_readInt;
+
+    int *_result_convertToInt;
+    int _sysResultData_convertToInt[2];
+    signed long int _sysResultLongIntData_convertToInt;
+
 public:
     uint8_t _sysReadData[6] = {0};
 
@@ -97,7 +108,7 @@ public:
         _IntData = _sendInt;
 
         _IntData += SEND_INT_BASE;
-        
+
         _sendData_Int[0] = HEAD_WORD;
         _sendData_Int[1] = _sendCommand_Int;
 
@@ -148,7 +159,17 @@ public:
     uint8_t *read()
     {
         _sysAvaiable = false;
-        return _sysReadData;
+
+        _sysResultData_read[0] = *(_sysReadData + 0);
+        _sysResultData_read[1] = *(_sysReadData + 1);
+        _sysResultData_read[2] = *(_sysReadData + 2);
+        _sysResultData_read[3] = *(_sysReadData + 3);
+        _sysResultData_read[4] = *(_sysReadData + 4);
+        _sysResultData_read[5] = *(_sysReadData + 5);
+
+        _result_read = &_sysResultData_read[0];
+
+        return _result_read;
     }
 
     uint8_t readCommand()
@@ -160,19 +181,17 @@ public:
     int *readInt()
     {
         _sysAvaiable = false;
-        int _readInt;
-        int *_sysReadInt;
-        signed long int _sysIntData;
 
-        *_sysReadInt = _sysReadData[1];
-        
-        _sysIntData = _sysReadData[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX + _sysReadData[3] * INT_UNIT_MAX * INT_UNIT_MAX + _sysReadData[4] * INT_UNIT_MAX + _sysReadData[5];
+        _sysResultData_readInt[0] = _sysReadData[1];
 
-        _sysIntData -= SEND_INT_BASE;
+        _sysResultLongIntData_readInt = _sysReadData[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX + _sysReadData[3] * INT_UNIT_MAX * INT_UNIT_MAX + _sysReadData[4] * INT_UNIT_MAX + _sysReadData[5];
+        _sysResultLongIntData_readInt -= SEND_INT_BASE;
 
-        *(_sysReadInt + 1) = _sysIntData;
+        _sysResultData_readInt[1] = _sysResultLongIntData_readInt;
 
-        return _sysReadInt;
+        _result_readInt = &_sysResultData_readInt[0];
+
+        return _result_readInt;
     }
 
     uint8_t stateOfEmergency()
@@ -180,19 +199,17 @@ public:
         return _sysEmergency;
     }
 
-    int *convertToInt(uint8_t *_convertData){
-        int *_result;
-        signed long int _sysResultIntData;
+    int *convertToInt(uint8_t *_convertData)
+    {
+        _sysResultLongIntData_convertToInt = *(_convertData + 2) * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX + *(_convertData + 3) * INT_UNIT_MAX * INT_UNIT_MAX + *(_convertData + 4) * INT_UNIT_MAX + *(_convertData + 5);
+        _sysResultLongIntData_convertToInt -= SEND_INT_BASE;
 
-        *_result = *(_convertData + 1);
+        _sysResultData_convertToInt[0] = *_convertData;
+        _sysResultData_convertToInt[1] = _sysResultLongIntData_convertToInt;
 
-        _sysResultIntData = *(_convertData + 2) * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX + *(_convertData + 3) * INT_UNIT_MAX * INT_UNIT_MAX + *(_convertData + 4) * INT_UNIT_MAX + *(_convertData + 5);
+        _result_convertToInt = &_sysResultData_convertToInt[0];
 
-        _sysResultIntData -= SEND_INT_BASE;
-
-        *(_result + 1) = _sysResultIntData;
-
-        return _result;
+        return _result_convertToInt;
     }
 };
 
