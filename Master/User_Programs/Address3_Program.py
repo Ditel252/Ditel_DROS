@@ -23,6 +23,23 @@ class program:
         pass
 
     def _loop(self):    #_setup関数が終了した後に実行される関数, 関数は無条件ループする
-        pass
+        if(bypass[2].avaiable() == True):
+            self.readData = bypass[2].read()
+
+            if(self.readData[1] == 150):
+                self.readIntData = self._serial.convertToInt(self.readData)
+
+                self._serial.logPrint(True, "read = " + str(self.readIntData[0]) + " : " +  str(self.readIntData[1]))
+
+                self.readIntData[0] += 1
+                self.readIntData[1] += 1
+
+                while(self._serial.unconditional()):
+                    if(self._serial.sendInt(self.readIntData[0],self.readIntData[1]) == True):
+                        self._serial.logPrint(True, "send = " + str(self.readIntData[0]) + " : " +  str(self.readIntData[1]))
+                        break
+                    else:
+                        self._serial.logPrint(False, "send = " + str(self.readIntData[0]) + " : " +  str(self.readIntData[1]))
+                        time.sleep(0.05)
 
 #===============↑↑User記入(ここまで)↑↑===============

@@ -10,6 +10,8 @@ version : 1.1.29
 
 #define ADDRESS 1 //(変更可)アドレスを設定する
 
+#define READ_FAILURE 240
+
 #define HEAD_WORD 254
 #define NO_SEND_DATA 242
 #define INT_UNIT_MAX 241
@@ -19,6 +21,7 @@ version : 1.1.29
 #define COMMAND_COMMUNICATION_BEGIN 201
 #define COMMAND_COMMUNICATION_END 202
 #define COMMAND_DECLARE_EMERGENCY 203
+#define COMMAND_SEND_EVALUATION 204
 
 #define MEMORY_SIZE_SERIAL_READ_TASK 128
 #define MEMORY_SIZE_USER_PROGRAM_TASK 128
@@ -39,6 +42,7 @@ private:
     int _returnDataTime = 0;
     uint8_t _returnData[6];
     bool _lastAvaiable = false;
+    char _evaluationSendData[7];
 
     uint8_t *_result_read;
     uint8_t _sysResultData_read[6];
@@ -101,7 +105,7 @@ public:
 
         if (_returnDataTime < 30)
         {
-            _returnData[0]= *(_sysReadData + 0);
+            _returnData[0] = *(_sysReadData + 0);
             _returnData[1] = *(_sysReadData + 1);
             _returnData[2] = *(_sysReadData + 2);
             _returnData[3] = *(_sysReadData + 3);
@@ -112,32 +116,44 @@ public:
 
             if ((*_sendDataContents == _returnData[0]) && ((*(_sendDataContents + 1) + 10) == _returnData[1]) && (*(_sendDataContents + 2) == _returnData[2]) && (*(_sendDataContents + 3) == _returnData[3]) && (*(_sendDataContents + 4) == _returnData[4]) && (*(_sendDataContents + 5) == _returnData[5]))
             {
+                vTaskDelay(10 / portTICK_RATE_MS);
+                
+                _evaluationSendData[0] = HEAD_WORD;
+                _evaluationSendData[1] = COMMAND_SEND_EVALUATION + COMMUNICATION_BASE_VALUE;
+                _evaluationSendData[2] = 1 + COMMUNICATION_BASE_VALUE;
+                _evaluationSendData[3] = NO_SEND_DATA + COMMUNICATION_BASE_VALUE;
+                _evaluationSendData[4] = NO_SEND_DATA + COMMUNICATION_BASE_VALUE;
+                _evaluationSendData[5] = NO_SEND_DATA + COMMUNICATION_BASE_VALUE;
+                _evaluationSendData[6] = '\0';
+
+                Serial.println(sendDataContents);
+
                 _readDataIsReturnData = false;
                 _sysAvaiable = _lastAvaiable;
-                
+
                 vTaskDelay(CONTINUOUS_SEND_BUFFER_TIME / portTICK_RATE_MS);
 
                 return true;
             }
-            else
-            {
-                _readDataIsReturnData = false;
-                _sysAvaiable = _lastAvaiable;
-
-                vTaskDelay(CONTINUOUS_SEND_BUFFER_TIME / portTICK_RATE_MS);
-
-                return false;
-            }
         }
-        else
-        {
-            _readDataIsReturnData = false;
-            _sysAvaiable = _lastAvaiable;
+        vTaskDelay(10 / portTICK_RATE_MS);
 
-            vTaskDelay(CONTINUOUS_SEND_BUFFER_TIME / portTICK_RATE_MS);
+        _evaluationSendData[0] = HEAD_WORD;
+        _evaluationSendData[1] = COMMAND_SEND_EVALUATION + COMMUNICATION_BASE_VALUE;
+        _evaluationSendData[2] = 0 + COMMUNICATION_BASE_VALUE;
+        _evaluationSendData[3] = NO_SEND_DATA + COMMUNICATION_BASE_VALUE;
+        _evaluationSendData[4] = NO_SEND_DATA + COMMUNICATION_BASE_VALUE;
+        _evaluationSendData[5] = NO_SEND_DATA + COMMUNICATION_BASE_VALUE;
+        _evaluationSendData[6] = '\0';
 
-            return false;
-        }
+        Serial.println(sendDataContents);
+
+        _readDataIsReturnData = false;
+        _sysAvaiable = _lastAvaiable;
+
+        vTaskDelay(CONTINUOUS_SEND_BUFFER_TIME / portTICK_RATE_MS);
+
+        return false;
     }
 
     bool sendCommand(uint8_t _sendCommandContents)

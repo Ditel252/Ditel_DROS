@@ -15,6 +15,9 @@ class systemSerial
 private:
   uint8_t sysSerialReadData[6] = {0};
   uint8_t sysSerialSendData[6] = {0};
+  uint8_t sysSerialReadEvaluationData[6] = {0};
+
+  int sysReadCount = 0;
 
 public:
   void setupProcess()
@@ -118,10 +121,43 @@ public:
 
       _sendDataContents[6] = '\0';
 
-      _userSerial._sysAvaiable = true;
-
       if (_readDataIsReturnData == false)
+      {
+        _userSerial._sysAvaiable = true;
         Serial.println(_sendDataContents);
+
+        sysReadCount = 0;
+
+        while (sysReadCount <= 50)
+        {
+          sysSerialReadEvaluationData[0] = Serial.read();
+
+          if (sysSerialReadEvaluationData[0] == HEAD_WORD)
+          {
+            for (int _i = 1; _i < 6; _i++)
+            {
+              vTaskDelay(3 / portTICK_RATE_MS);
+              sysSerialReadEvaluationData[_i] = Serial.read() - COMMUNICATION_BASE_VALUE;
+            }
+
+            break;
+          }
+
+          sysReadCount++;
+
+          vTaskDelay(1 / portTICK_RATE_MS);
+        }
+
+        if(sysReadCount < 50){
+          if((sysSerialReadEvaluationData[2] == COMMAND_SEND_EVALUATION)){
+            ;
+          }else{
+            _userSerial._sysReadData[1] = READ_FAILURE;
+          }
+        }else{
+          // _userSerial._sysReadData[1] = READ_FAILURE;
+        }
+      }
 
       vTaskDelay(CONTINUOUS_SEND_BUFFER_TIME / portTICK_RATE_MS);
 
