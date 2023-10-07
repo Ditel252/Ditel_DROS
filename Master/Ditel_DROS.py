@@ -31,7 +31,7 @@ import User_Programs.Address17_Program as add17
 import User_Programs.Address18_Program as add18
 import User_Programs.Address19_Program as add19
 import User_Programs.Address20_Program as add20
-import User_Programs.Main_program as addMain
+import User_Programs.Main_Program as addMain
 
 
 #===============↓↓定数の宣言(ここから)↓↓===============
@@ -732,32 +732,45 @@ class window1_Contents:
 
     def portAddressSetting(self):
         portAddressSettingWindow.startWindow()
+        terminalLog.print(True, "portAddressSettingWindow is started")
     
     def portAddressSettingCheck(self):
         portAddressSettingCheckWindow.startWindow()
+        terminalLog.print(True, "portAddressSettingCheckWindow is started")
 
     def communicationStart(self):
         result = tkinter.messagebox.askquestion(title="通信の開始", message="本当に通信を開始しますか?")
         if(result == "yes"):
+            terminalLog.print(True, "requested start communication")
+
             global programHasStarted
             programHasStarted = True
             self.logPrint(0, True, "read number of thread : thread count = " + str(threading.active_count()))
 
             programsys.startUserProgram()
+            terminalLog.print(True, "userPrograms is started")
+
             self.threadForLog.start()
+            terminalLog.print(True, "threadForLog is started")
+
             serialsys.startSerial()
+            terminalLog.print(True, "systemSerial is started")
 
             try:
                 bypasssys._bypassStart()
                 self.logPrint(0, True, "start bypass thread")
+                terminalLog.print(True, "threadForBypass is started")
             except:
                 self.logPrint(0, False, "start bypass thread")
+                terminalLog.print(False, "threadForBypass is started")
 
             try:
                 emergencysys._startStateRead()
                 self.logPrint(0, True, "start state read thread")
+                terminalLog.print(True, "threadForReadState is started")
             except:
                 self.logPrint(0, False, "start state read thread")
+                terminalLog.print(False, "threadForReadState is started")
 
             self.buttonA_1['state'] = "disable"
             self.buttonA_2['state'] = "disable"
@@ -766,10 +779,10 @@ class window1_Contents:
 
             self.logPrint(0, True, "read number of thread : thread count = " + str(threading.active_count()))
         elif (result == "no"):
-            pass
+            terminalLog.print(False, "requested start communication")
 
     def logPrintProgram(self):
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             for _i in range(1, 21, 1):
                 if(programsys.addressProgram[_i]._serial._log_contents != None):
                     mainWindow.logPrint(_i, programsys.addressProgram[_i]._serial._log_condition,programsys.addressProgram[_i]._serial._log_contents)
@@ -782,8 +795,10 @@ class window1_Contents:
                 if(programsys.addressProgram[_i]._serial._rxLog != None):
                     mainWindow.rxLogPrint(_i, programsys.addressProgram[_i]._serial._rxLog)
                     programsys.addressProgram[_i]._serial._rxLog = None
-                    
             time.sleep(LOG_PRINT_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def startWindow(self):
         self.window1_frame.deiconify()
@@ -794,10 +809,12 @@ class window1_Contents:
 
         self.window1Menubar = tkinter.Menu(self.window1_frame, fg= COLOR_MENU_BAR_TEXT,bg=COLOR_MENU_BAR_BACK)
         self.window1_frame.config(menu=self.window1Menubar)
+        terminalLog.print(True, "window1 frame is ready")
 
         #メニューバーの内容の作成
         self.window1FileMenu = tkinter.Menu(self.window1_frame, fg=COLOR_MENU_BAR_TEXT, bg=COLOR_MENU_BAR_BACK, tearoff=False)
         self.window1SettingMenu = tkinter.Menu(self.window1_frame, fg=COLOR_MENU_BAR_TEXT, bg=COLOR_MENU_BAR_BACK, tearoff=False)
+        terminalLog.print(True, "window1MenuBar is made")
 
         #メニューバーの内容の設定
         self.window1Menubar.add_cascade(label="ファイル", menu=self.window1FileMenu)  #ファイルのメニュー
@@ -809,6 +826,7 @@ class window1_Contents:
         #設定の内容
         self.window1SettingMenu.add_command(label="ポート・アドレスの設定", command=self.portAddressSetting)
         self.window1SettingMenu.add_command(label="ポート・アドレスの確認", command=portAddressSettingCheckWindow.startWindow)
+        terminalLog.print(True, "window1 MenuBar is ready")
 
         self.frame.grid(row=0, column=0)
         self.label0_1.grid(row=0, column=0)
@@ -1139,9 +1157,12 @@ class window1_Contents:
         self.buttonA_3.grid(row= 14, column=23)
         self.buttonA_4.grid(row= 15, column=23)
         self.buttonA_5.grid(row= 16, column=23)
-        
+
+        terminalLog.print(True, "window1 Contents is ready")
 
         self.window1_frame.mainloop()
+
+        terminalLog.print(True, "window1 mainLoop is ended")
 
         exit()
 
@@ -1149,65 +1170,80 @@ class window1_Contents:
         if(programHasStarted):
             stopCommunicationReturn = self.stopCommunication()
             if(stopCommunicationReturn):
-                print("[  OK  ] stop communication and thread")
+                terminalLog.print(True, "stop communication and thread")
                 self.window1_frame.destroy()
+                terminalLog.print(True, "request DROS shutdown")
+                exit()
             else:
-                print("[FAIED] stop communication and thread")
+                terminalLog.print(False, "stop communication and thread")
         else:
             self.window1_frame.destroy()
-
-        print("[  OK  ] DROS will shutdown soon....")
-        exit()
+            exit()
 
     def stopCommunication(self):
         result = tkinter.messagebox.askquestion(title="通信の終了", message="本当に通信を終了しますか?")
         if (result  == "yes"):
+            terminalLog.print(True, "request stop communication")
             self.logPrint(0, True, "read number of thread : thread count = " + str(threading.active_count()))
             self.logPrint(0, True, "start address threads stopping")
             Ditel_DROS_Kernel.threadCondition = False
 
             
             for _i in range(1, 21, 1):
-                self.logPrint(_i, programsys.addressProgram[_i]._serial.end(), "serial thread stoped")
+                resultSerialThreadStoped = programsys.addressProgram[_i]._serial.end()
+
+                self.logPrint(_i, resultSerialThreadStoped, "serial thread stoped")
+                terminalLog.print(resultSerialThreadStoped, "Address" + str(_i) + "_Program Serial thread stoped")
+
                 try:
                     programsys.addressThread[_i].join()
                     self.logPrint(_i, True, " user program thread stoped")
+                    terminalLog.print(True, "Address" + str(_i) + "_Program thread stoped")
                 except:
                     self.logPrint(_i, False,  " user program thread stoped")
+                    terminalLog.print(False, "Address" + str(_i) + "_Program thread stoped")
             
             
             try:
                 programsys.addressThread[0].join()
                 self.logPrint(0, True,  " user program thread stoped")
+                terminalLog.print(True, "Main_Program thread stoped")
             except:
                 self.logPrint(0, False, "user program thread stoped")
+                terminalLog.print(False, "Main_Program thread stoped")
 
-            self.logPrint(0, True, "finish all serial thread and user program thread stopping")
-
+            terminalLog.print(True, "finish all serial thread and user program thread stopping")
             self.logPrint(0, True, "read number of thread : thread count = " + str(threading.active_count()))
 
             
             try:
                 self.threadForLog.join()
                 self.logPrint(0, True, "log print thread stoped")
+                terminalLog.print(True, "threadForLogPrint stoped")
             except:
                 self.logPrint(0, False, "log print thread stoped")
+                terminalLog.print(False, "threadForLogPrint stoped")
             
             
             try:
                 bypasssys._bypassThread.join()
                 self.logPrint(0, True, "bypass thread stop")
+                terminalLog.print(True, "threadForBypass stoped")
             except:
                 self.logPrint(0, False, "bypass thread stop")
+                terminalLog.print(False, "threadForBypass stoped")
             
             try:
                 emergencysys._emergencyThread.join()
                 self.logPrint(0, True, "state read thread stop")
+                terminalLog.print(True, "threadForReadState stoped")
             except:
                 self.logPrint(0, False, "state read thread stop")
+                terminalLog.print(False, "threadForReadState stoped")
             
 
             self.logPrint(0, True, "finish all thread stopping")
+            terminalLog.print(True, "finish all thread stopping")
 
             self.logPrint(0, True, "read number of thread : thread count = " + str(threading.active_count()))
 
@@ -1215,6 +1251,7 @@ class window1_Contents:
             self.buttonA_5['state'] = "normal"
             return True
         elif (result == "no"):
+            terminalLog.print(False, "request stop communication")
             return False
 
 #==============↑↑window1関係(ここまで)↑↑===============
@@ -3178,170 +3215,233 @@ class userPrograms:
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[1]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[1]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address2Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[2]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[2]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address3Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[3]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[3]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address4Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[4]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[4]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address5Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[5]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[5]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address6Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[6]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[6]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address7Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[7]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[7]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address8Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[8]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[8]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address9Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[9]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[9]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address10Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[10]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[10]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     
     def _address11Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[11]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[11]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address12Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[12]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[12]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address13Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[13]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[13]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address14Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[14]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[14]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address15Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[15]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[15]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address16Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[16]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[16]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address17Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[17]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[17]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address18Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[18]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[18]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address19Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[19]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[19]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _address20Program(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[20]._setup()
         
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[20]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def _userProgram(self):
         time.sleep(SERIAL_START_COOL_DOWN_TIME)
         self.addressProgram[0]._setup()
 
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             self.addressProgram[0]._loop()
             time.sleep(USER_PROGURAM_PERIOD)
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
         
 #==============↑↑UserProgram関係(ここまで)↑↑===============
 
@@ -3352,7 +3452,7 @@ class _bypass:
         self._bypassThread = threading.Thread(target=self._bypassSetRead)
 
     def _bypassSetRead(self):
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             for _i in range(1, 21, 1):
                 if(portAddressRelationships[_i] != None):
                     try:
@@ -3374,6 +3474,9 @@ class _bypass:
                     
             time.sleep(0.001)
 
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
+
     def _bypassStart(self):
         self._bypassThread.start()
 
@@ -3388,9 +3491,12 @@ class _emergency:
         self._emergencyThread = threading.Thread(target=self._stateRead)
 
     def _stateRead(self):
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             time.sleep(0.001)
             if(Ditel_DROS_Kernel.addressWhereSendEmergency != 0):
+                break
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
                 break
         
         if ((Ditel_DROS_Kernel.addressWhereSendEmergency != 0) and Ditel_DROS_Kernel.threadCondition):
@@ -3463,20 +3569,36 @@ class _emergency:
 
 #==============↑↑emergency関係(ここまで)↑↑===============
 
+terminalLog = Ditel_DROS_Kernel._terminalLog()
+
+terminalLog.print(True, "start DROS | version : " + VERSION)
+
 mainWindow = window1_Contents()
+terminalLog.print(True, "mainWindow Contents is ready")
 
 portAddressSettingWindow = window2_Contents()
+terminalLog.print(True, "portAddressSettingWindow Contents is ready")
 
 portAddressAutoSettingWindow = window2_1_Contens()
+terminalLog.print(True, "portAddressAutoSettingWindow Contents is ready")
 
 portAddressManualSettingWindow = window2_2_Contents()
+terminalLog.print(True, "portAddressManualSettingWindow Contents is ready")
+
 portAddressSettingCheckWindow = window2_3_Contens()
+terminalLog.print(True, "portAddressSettingCheckWindow Contents is ready")
 
 serialsys = systemSerial()
-programsys = userPrograms()
-bypasssys = _bypass()
-emergencysys = _emergency()
+terminalLog.print(True, "systemSerial is ready")
 
-print('[  OK  ] start DROS  |  version : ' + VERSION)
+programsys = userPrograms()
+terminalLog.print(True, "userPrograms is ready")
+
+bypasssys = _bypass()
+terminalLog.print(True, "systemBypass is ready")
+
+emergencysys = _emergency()
+terminalLog.print(True, "emergencySystem is ready")
 
 mainWindow.startWindow()
+terminalLog.print(True, "mainWindow is started")

@@ -21,7 +21,7 @@ SEND_INT_MIN =  -1600000000
 SEND_INT_BASE = 1600000000
 
 def addressRead(_portName:str):
-        serial1 = serial.Serial(_portName, 115200, timeout=0.2)
+        serial1 = serial.Serial(_portName, 115200, timeout=1)
 
         serial1.write(bytes([int(HEAD_WORD)]))
         serial1.write(bytes([int(COMMAND_CHECK_ADDRESS + COMMUNICATION_BASE_VALUE)]))
@@ -80,7 +80,7 @@ class ditelSerial:
         self.useAddress:int = _sysAddress
 
     def _sysSerialRead(self):
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             sysSerialReadData:str = self.serialModule.readline()
 
             try:
@@ -118,6 +118,9 @@ class ditelSerial:
                     pass
             except:
                 pass
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def begin(self):
         try:
@@ -219,12 +222,21 @@ class ditelSerial:
     def read(self):
          return self.readData
     
+    def readCommand(self):
+        _readData_Command:bytes = [None]*6
+
+        _readData_Command = self.read()
+
+        _readCommand:bytes = _readData_Command[1]
+
+        return _readCommand
+    
     def readInt(self):
         _readData_Int:bytes = [None]*6
 
         _readData_Int = self.read()
 
-        _readInt = [None]*2
+        _readInt:int = [None]*2
 
         _readInt[0] = _readData_Int[1]
         _readInt[1] = (_readData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX) + (_readData_Int[3] * INT_UNIT_MAX * INT_UNIT_MAX) + (_readData_Int[4] * INT_UNIT_MAX) + _readData_Int[5]

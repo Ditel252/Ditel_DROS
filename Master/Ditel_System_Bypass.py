@@ -36,6 +36,15 @@ class ditelSystemBypass:
         
         return _readInt
     
+    def readCommand(self):
+        _readData_Command:bypass = [None]*6
+
+        _readData_Command = self.read()
+
+        _readCommand:bypass = _readData_Command[1]
+
+        return _readCommand
+    
     def avaiable(self):
         self.requestAvaiableData = True
 
