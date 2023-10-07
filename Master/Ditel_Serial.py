@@ -10,20 +10,18 @@ HEAD_WORD =                 254
 NO_SEND_DATA =              242
 INT_UNIT_MAX =              241
 COMMUNICATION_BASE_VALUE =  11
-READ_FAILURE =              240
 
 COMMAND_CHECK_ADDRESS =         200
 COMMAND_COMMUNICATION_BEGIN =   201
 COMMAND_COMMUNICATION_END =     202
 COMMAND_DECLARE_EMERGENCY =     203
-COMMAND_SEND_EVALUATION =       204
 
 SEND_INT_MAX =  1600000000
 SEND_INT_MIN =  -1600000000
 SEND_INT_BASE = 1600000000
 
 def addressRead(_portName:str):
-        serial1 = serial.Serial(_portName, 115200, timeout=0.5)
+        serial1 = serial.Serial(_portName, 115200, timeout=1)
 
         serial1.write(bytes([int(HEAD_WORD)]))
         serial1.write(bytes([int(COMMAND_CHECK_ADDRESS + COMMUNICATION_BASE_VALUE)]))
@@ -78,13 +76,11 @@ class ditelSerial:
         
         self.readData:bytes = [None]*6
         
-        self.serialModule = serial.Serial(self.portName, 115200, timeout=0.5)
+        self.serialModule = serial.Serial(self.portName, 115200, timeout=0.2)
         self.useAddress:int = _sysAddress
 
-        self.readEvaluation:bool = False
-
     def _sysSerialRead(self):
-        while Ditel_DROS_Kernel.threadCondition:
+        while True:
             sysSerialReadData:str = self.serialModule.readline()
 
             try:
@@ -113,26 +109,6 @@ class ditelSerial:
 
                         self.txLogPrint(self.readData[0], self.readData[1] + COMMUNICATION_BASE_VALUE + 10, self.readData[2] + COMMUNICATION_BASE_VALUE, self.readData[3] + COMMUNICATION_BASE_VALUE, self.readData[4] + COMMUNICATION_BASE_VALUE, self.readData[5] + COMMUNICATION_BASE_VALUE)
 
-                        sysSerialReadData:str = self.serialModule.readline()
-
-                        if(sysSerialReadData != -1):
-                            try:
-                                sysReadEvaluationData:bytes = struct.unpack('8B', sysSerialReadData)
-
-                                self.rxLogPrint(sysReadEvaluationData[0], sysReadEvaluationData[1], sysReadEvaluationData[2], sysReadEvaluationData[3], sysReadEvaluationData[4], sysReadEvaluationData[5])
-
-                                for _i in range(1, 6, 1):
-                                    sysReadEvaluationData[_i] -= COMMUNICATION_BASE_VALUE
-
-                                if((sysReadEvaluationData[0] == HEAD_WORD) and (sysReadEvaluationData[1] == COMMAND_SEND_EVALUATION) and (sysReadEvaluationData[2] == 1)):
-                                    pass
-                                else:
-                                    self.readData[1] = READ_FAILURE
-                            except:
-                                self.readData[1] = READ_FAILURE
-                        else:
-                            self.readData[1] = READ_FAILURE
-
                         bypass[self.useAddress].toTxUse = True
 
                     if(self.readData[1] == COMMAND_DECLARE_EMERGENCY):
@@ -142,6 +118,9 @@ class ditelSerial:
                     pass
             except:
                 pass
+
+            if(Ditel_DROS_Kernel.threadCondition == False):
+                break
 
     def begin(self):
         try:
@@ -188,37 +167,10 @@ class ditelSerial:
             bypass[self.useAddress].toTxUse = True
 
             if((_returnData[0] == _sendData[0]) and (_returnData[1] == _sendData[1] + 10)):
-                self.serialModule.write(bytes([int(HEAD_WORD)]))
-                self.serialModule.write(bytes([int(COMMAND_SEND_EVALUATION + COMMUNICATION_BASE_VALUE)]))
-                self.serialModule.write(bytes([int(1 + COMMUNICATION_BASE_VALUE)]))
-                self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
-                self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
-                self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
-
-                print(str(HEAD_WORD) + " : " + str(COMMAND_SEND_EVALUATION + COMMUNICATION_BASE_VALUE) + " : " + str(1 + COMMUNICATION_BASE_VALUE) + " : " + str(NO_SEND_DATA + COMMUNICATION_BASE_VALUE) + " : " + str(NO_SEND_DATA + COMMUNICATION_BASE_VALUE) + " : " + str(NO_SEND_DATA + COMMUNICATION_BASE_VALUE))
-
                 return True
             else:
-                self.serialModule.write(bytes([int(HEAD_WORD)]))
-                self.serialModule.write(bytes([int(COMMAND_SEND_EVALUATION + COMMUNICATION_BASE_VALUE)]))
-                self.serialModule.write(bytes([int(0 + COMMUNICATION_BASE_VALUE)]))
-                self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
-                self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
-                self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
-
-                print(str(HEAD_WORD) + " : " + str(COMMAND_SEND_EVALUATION + COMMUNICATION_BASE_VALUE) + " : " + str(0 + COMMUNICATION_BASE_VALUE) + " : " + str(NO_SEND_DATA + COMMUNICATION_BASE_VALUE) + " : " + str(NO_SEND_DATA + COMMUNICATION_BASE_VALUE) + " : " + str(NO_SEND_DATA + COMMUNICATION_BASE_VALUE))
-                
                 return False
         else:
-            self.serialModule.write(bytes([int(HEAD_WORD)]))
-            self.serialModule.write(bytes([int(COMMAND_SEND_EVALUATION + COMMUNICATION_BASE_VALUE)]))
-            self.serialModule.write(bytes([int(0 + COMMUNICATION_BASE_VALUE)]))
-            self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
-            self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
-            self.serialModule.write(bytes([int(NO_SEND_DATA + COMMUNICATION_BASE_VALUE)]))
-
-            print(str(HEAD_WORD) + " : " + str(COMMAND_SEND_EVALUATION + COMMUNICATION_BASE_VALUE) + " : " + str(0 + COMMUNICATION_BASE_VALUE) + " : " + str(NO_SEND_DATA + COMMUNICATION_BASE_VALUE) + " : " + str(NO_SEND_DATA + COMMUNICATION_BASE_VALUE) + " : " + str(NO_SEND_DATA + COMMUNICATION_BASE_VALUE))
-
             bypass[self.useAddress].toTxUse = True
             return False
         
@@ -270,12 +222,21 @@ class ditelSerial:
     def read(self):
          return self.readData
     
+    def readCommand(self):
+        _readData_Command:bytes = [None]*6
+
+        _readData_Command = self.read()
+
+        _readCommand:bytes = _readData_Command[1]
+
+        return _readCommand
+    
     def readInt(self):
         _readData_Int:bytes = [None]*6
 
         _readData_Int = self.read()
 
-        _readInt = [None]*2
+        _readInt:int = [None]*2
 
         _readInt[0] = _readData_Int[1]
         _readInt[1] = (_readData_Int[2] * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX) + (_readData_Int[3] * INT_UNIT_MAX * INT_UNIT_MAX) + (_readData_Int[4] * INT_UNIT_MAX) + _readData_Int[5]
