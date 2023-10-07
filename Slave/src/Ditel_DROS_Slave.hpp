@@ -1,7 +1,7 @@
 /*=======================================
 <Ditel Robot Operating System Slave>
 
-version : 1.1.31
+version : 1.1.32
 許可された箇所以外変更禁止
 =======================================*/
 
@@ -268,7 +268,7 @@ public:
         _sysResultLongIntData_convertToInt = *(_convertData + 2) * INT_UNIT_MAX * INT_UNIT_MAX * INT_UNIT_MAX + *(_convertData + 3) * INT_UNIT_MAX * INT_UNIT_MAX + *(_convertData + 4) * INT_UNIT_MAX + *(_convertData + 5);
         _sysResultLongIntData_convertToInt -= SEND_INT_BASE;
 
-        _sysResultData_convertToInt[0] = *_convertData;
+        _sysResultData_convertToInt[0] = *(_convertData + 1);
         _sysResultData_convertToInt[1] = _sysResultLongIntData_convertToInt;
 
         _result_convertToInt = &_sysResultData_convertToInt[0];
