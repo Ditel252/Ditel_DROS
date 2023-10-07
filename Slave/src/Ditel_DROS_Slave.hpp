@@ -101,7 +101,7 @@ public:
 
         if (_returnDataTime < 30)
         {
-            _returnData[0]= *(_sysReadData + 0);
+            _returnData[0] = *(_sysReadData + 0);
             _returnData[1] = *(_sysReadData + 1);
             _returnData[2] = *(_sysReadData + 2);
             _returnData[3] = *(_sysReadData + 3);
@@ -114,7 +114,7 @@ public:
             {
                 _readDataIsReturnData = false;
                 _sysAvaiable = _lastAvaiable;
-                
+
                 vTaskDelay(CONTINUOUS_SEND_BUFFER_TIME / portTICK_RATE_MS);
 
                 return true;
