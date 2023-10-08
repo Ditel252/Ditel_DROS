@@ -6,19 +6,19 @@ import time
 import Ditel_DROS_Kernel
 from Ditel_System_Bypass import bypass
 
-HEAD_WORD =                 254
-NO_SEND_DATA =              242
-INT_UNIT_MAX =              241
-COMMUNICATION_BASE_VALUE =  11
+HEAD_WORD:bytes =                   254
+NO_SEND_DATA:bytes =                242
+INT_UNIT_MAX:bytes =                241
+COMMUNICATION_BASE_VALUE:bytes =    11
 
-COMMAND_CHECK_ADDRESS =         200
-COMMAND_COMMUNICATION_BEGIN =   201
-COMMAND_COMMUNICATION_END =     202
-COMMAND_DECLARE_EMERGENCY =     203
+COMMAND_CHECK_ADDRESS:bytes =       200
+COMMAND_COMMUNICATION_BEGIN:bytes = 201
+COMMAND_COMMUNICATION_END:bytes =   202
+COMMAND_DECLARE_EMERGENCY:bytes =   203
 
-SEND_INT_MAX =  1600000000
-SEND_INT_MIN =  -1600000000
-SEND_INT_BASE = 1600000000
+SEND_INT_MAX:int =  1600000000
+SEND_INT_MIN:int =  -1600000000
+SEND_INT_BASE:int = 1600000000
 
 def addressRead(_portName:str):
         serial1 = serial.Serial(_portName, 115200, timeout=1)
@@ -90,6 +90,7 @@ class ditelSerial:
                     self._serialAvaiableVariable = True
 
                     self.rxLogPrint(sysReadData[0], sysReadData[1], sysReadData[2], sysReadData[3], sysReadData[4], sysReadData[5])
+                    Ditel_DROS_Kernel.terminalLog.print(True, "Address%2d Read %3d:%3d:%3d:%3d:%3d:%3d" % (self.useAddress, int(sysReadData[0]), int(sysReadData[1]), int(sysReadData[2]), int(sysReadData[3]), int(sysReadData[4]), int(sysReadData[5])))
                     
                     self.readData[0] = sysReadData[0]
                     for _i in range(1, 6, 1):
@@ -108,6 +109,7 @@ class ditelSerial:
                         self.serialModule.write(bytes([int(self.readData[5] + COMMUNICATION_BASE_VALUE)]))
 
                         self.txLogPrint(self.readData[0], self.readData[1] + COMMUNICATION_BASE_VALUE + 10, self.readData[2] + COMMUNICATION_BASE_VALUE, self.readData[3] + COMMUNICATION_BASE_VALUE, self.readData[4] + COMMUNICATION_BASE_VALUE, self.readData[5] + COMMUNICATION_BASE_VALUE)
+                        Ditel_DROS_Kernel.terminalLog.print(True, "Address%2d Read %3d:%3d:%3d:%3d:%3d:%3d" % (self.useAddress, int(self.readData[0]), int(self.readData[1] + COMMUNICATION_BASE_VALUE + 10), int(self.readData[2] + COMMUNICATION_BASE_VALUE), int(self.readData[3] + COMMUNICATION_BASE_VALUE), int(self.readData[4] + COMMUNICATION_BASE_VALUE), int(self.readData[5] + COMMUNICATION_BASE_VALUE)))
 
                         bypass[self.useAddress].toTxUse = True
 
@@ -117,7 +119,7 @@ class ditelSerial:
                 else:
                     pass
             except:
-                pass
+                Ditel_DROS_Kernel.terminalLog.print(False, "serial read data")
 
             if(Ditel_DROS_Kernel.threadCondition == False):
                 break
@@ -127,11 +129,14 @@ class ditelSerial:
             self.serialThread = threading.Thread(target=self._sysSerialRead)
             self.serialThread.start()
 
+            Ditel_DROS_Kernel.terminalLog.print(True, "serial begin")
+
             if (self.sendCommand(COMMAND_COMMUNICATION_BEGIN) == True):
                 return True
             else:
                 return False
         except:
+            Ditel_DROS_Kernel.terminalLog.print(False, "serial begin")
             return False
         
     def send(self, _sendData:bytes):
@@ -149,7 +154,7 @@ class ditelSerial:
         self.serialModule.write(bytes([int(_sendData[5] + COMMUNICATION_BASE_VALUE)]))
 
         self.txLogPrint(_sendData[0], _sendData[1] + COMMUNICATION_BASE_VALUE, _sendData[2] + COMMUNICATION_BASE_VALUE, _sendData[3] + COMMUNICATION_BASE_VALUE, _sendData[4] + COMMUNICATION_BASE_VALUE, _sendData[5] + COMMUNICATION_BASE_VALUE)
-
+        Ditel_DROS_Kernel.terminalLog.print(True, "Address%2d Read %3d:%3d:%3d:%3d:%3d:%3d" % (self.useAddress, int(_sendData[0]), int(_sendData[1] + COMMUNICATION_BASE_VALUE), int(_sendData[2] + COMMUNICATION_BASE_VALUE), int(_sendData[3] + COMMUNICATION_BASE_VALUE), int(_sendData[4] + COMMUNICATION_BASE_VALUE), int(_sendData[5] + COMMUNICATION_BASE_VALUE)))
         _readReturnDataTime = 0
         while(self._serialAvaiableVariable == False):
             if(_readReturnDataTime >= 15):

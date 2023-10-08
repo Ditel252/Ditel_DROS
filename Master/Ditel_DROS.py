@@ -1,6 +1,6 @@
 """=======================================
 <Ditel Robot Operateting System>
-バージョン : v1.1.32
+バージョン : v1.1.33
 ======================================="""
 
 import tkinter
@@ -36,65 +36,65 @@ import User_Programs.Main_Program as addMain
 
 #===============↓↓定数の宣言(ここから)↓↓===============
 #バージョン設定
-VERSION = "1.1.32"
+VERSION = "1.1.33"
 
 #window1の大きさとタイトルの設定
-WINDOW1_HEIGHT =    1920                                        #高さ
-WINDOW1_WIDETH =    1080                                        #横幅
-WINDOW1_TITEL =     "Ditel Robot Operating System " + "v" + VERSION   #タイトル
+WINDOW1_HEIGHT:int =    1920                                        #高さ
+WINDOW1_WIDETH:int =    1080                                        #横幅
+WINDOW1_TITEL:str =     "Ditel Robot Operating System " + "v" + VERSION   #タイトル
 
 #window2の大きさとタイトルの設定
-WINDOW2_HEIGHT =    150
-WINDOW2_WIDETH =    400
-WINDOW2_TITEL =     "ポート・アドレスの設定"
+WINDOW2_HEIGHT:int =    150
+WINDOW2_WIDETH:int =    400
+WINDOW2_TITEL:str =     "ポート・アドレスの設定"
 
 #window2_1の大きさとタイトルの設定
-WINDOW2_1_HEIGHT =  460
-WINDOW2_1_WIDETH =  540
-WINDOW2_1_TITEL =   "ポート・アドレスの設定(自動)"
+WINDOW2_1_HEIGHT:int =  460
+WINDOW2_1_WIDETH:int =  540
+WINDOW2_1_TITEL:str =   "ポート・アドレスの設定(自動)"
 
 #window2_2の大きさとタイトルの設定
-WINDOW2_2_HEIGHT =  370
-WINDOW2_2_WIDETH =  1000
-WINDOW2_2_TITEL =   "ポート・アドレスの設定(手動)"
+WINDOW2_2_HEIGHT:int =  370
+WINDOW2_2_WIDETH:int =  1000
+WINDOW2_2_TITEL:str =   "ポート・アドレスの設定(手動)"
 
 #window2_2_1の大きさとタイトルの設定
-WINDOW2_2_1_HEIGHT =  380
-WINDOW2_2_1_WIDETH =  680
-WINDOW2_2_1_TITEL =   "ポート・アドレスの設定の確認"
+WINDOW2_2_1_HEIGHT:int =    380
+WINDOW2_2_1_WIDETH:int =    680
+WINDOW2_2_1_TITEL:str =     "ポート・アドレスの設定の確認"
 
 #色の設定
-COLOR_PORT_CONDITION_NORMAL = "green2"  #通信が正常の際のテキストボックスの色
-COLOR_PORT_CONDITION_ERROR  = "red2"    #通信に異常が発生した際の色
+COLOR_PORT_CONDITION_NORMAL:str =   "green2"  #通信が正常の際のテキストボックスの色
+COLOR_PORT_CONDITION_ERROR:str =    "red2"    #通信に異常が発生した際の色
 
-COLOR_WINDOW =      "#1c1c1c"       #ウィンドウの背景
-COLOR_LABEL_TEXT =  "white"         #ラベルのテキストの色
-COLOR_LABEL_BACK =  COLOR_WINDOW    #ラベルの背景の色
+COLOR_WINDOW:str =      "#1c1c1c"       #ウィンドウの背景
+COLOR_LABEL_TEXT:str =  "white"         #ラベルのテキストの色
+COLOR_LABEL_BACK:str =  COLOR_WINDOW    #ラベルの背景の色
 
-COLOR_CHECKBUTTON_BACK =        COLOR_WINDOW    #チェックボタンの背景の色
-COLOR_CHECKBUTTON_TEXT =        "white"         #チェックボタンのテキストの色
-COLOR_CHECKBUTTON_TOUCH_BACK =  "gray30"        #チェックボタンにカーソルが触れた時の背景の色
-COLOR_CHECKBUTTON_TOUCH_TEXT =  "goldenrod1"    #チェックボタンにカーソルが振れた時のテキストの色
+COLOR_CHECKBUTTON_BACK:str =        COLOR_WINDOW    #チェックボタンの背景の色
+COLOR_CHECKBUTTON_TEXT:str =        "white"         #チェックボタンのテキストの色
+COLOR_CHECKBUTTON_TOUCH_BACK:str =  "gray30"        #チェックボタンにカーソルが触れた時の背景の色
+COLOR_CHECKBUTTON_TOUCH_TEXT:str =  "goldenrod1"    #チェックボタンにカーソルが振れた時のテキストの色
 
-COLOR_MENU_BAR_BACK =        "white"    #メニューバーの背景の色
-COLOR_MENU_BAR_TEXT =   COLOR_WINDOW    #メニューバーのテキストの色
+COLOR_MENU_BAR_BACK:str =   "white"    #メニューバーの背景の色
+COLOR_MENU_BAR_TEXT:str =   COLOR_WINDOW    #メニューバーのテキストの色
 
-COLOR_SCROOLBAR_BACK =  COLOR_WINDOW    #スクロールバーの背景の色
-COLOR_SCROOLBAR_BAR =   "#2c3434"       #スクロールバーのバーの色
+COLOR_SCROOLBAR_BACK:str =  COLOR_WINDOW    #スクロールバーの背景の色
+COLOR_SCROOLBAR_BAR:str =   "#2c3434"       #スクロールバーのバーの色
 
-COLOR_BUTTON_BORDER =           "#2c3434"       #ボタンの枠の色
-COLOR_BUTTON_NORMAL_BACK =      "#2c3434"       #ボタンが有効の際のボタンの色
-COLOR_BUTTON_NORMAL_TEXT =      "#dcdcdc"       #ボタンが有効の際のテキストの色
-COLOR_BUTTON_DISABLED_BACK =    "black"         #ボタンが無効の際のボタンの色
-COLOR_BUTTON_DISABLED_TEXT =    "#2c3434"       #ボタンが無効の際のテキストの色
-COLOR_BUTTON_TOUCH_BACK =       "gray30"        #カーソルがボタンに触れた際のボタンの色
-COLOR_BUTTON_TOUCH_TEXT =       "goldenrod1"    #カーソルがボタンに触れた際のテキストの色
-COLOR_BUTTON_CLICK_BACK =       "gray13"        #ボタンがクリックされた際のボタンの色
-COLOR_BUTTON_CLICK_TEXT =       "goldenrod4"    #ボタンがクリックされた際のテキストの色
+COLOR_BUTTON_BORDER:str =           "#2c3434"       #ボタンの枠の色
+COLOR_BUTTON_NORMAL_BACK:str =      "#2c3434"       #ボタンが有効の際のボタンの色
+COLOR_BUTTON_NORMAL_TEXT:str =      "#dcdcdc"       #ボタンが有効の際のテキストの色
+COLOR_BUTTON_DISABLED_BACK:str =    "black"         #ボタンが無効の際のボタンの色
+COLOR_BUTTON_DISABLED_TEXT:str =    "#2c3434"       #ボタンが無効の際のテキストの色
+COLOR_BUTTON_TOUCH_BACK:str =       "gray30"        #カーソルがボタンに触れた際のボタンの色
+COLOR_BUTTON_TOUCH_TEXT:str =       "goldenrod1"    #カーソルがボタンに触れた際のテキストの色
+COLOR_BUTTON_CLICK_BACK:str =       "gray13"        #ボタンがクリックされた際のボタンの色
+COLOR_BUTTON_CLICK_TEXT:str =       "goldenrod4"    #ボタンがクリックされた際のテキストの色
 
-LOG_PRINT_PERIOD =              0.005   #ログ表示の更新速度
-SERIAL_START_COOL_DOWN_TIME =   0.05    #シリアル通信がスタートしてからユーザープログラムが始まるまでの時間
-USER_PROGURAM_PERIOD =          0.01    #ユーザープログラムの_loopの周期
+LOG_PRINT_PERIOD:float =            0.005   #ログ表示の更新速度
+SERIAL_START_COOL_DOWN_TIME:float = 0.05    #シリアル通信がスタートしてからユーザープログラムが始まるまでの時間
+USER_PROGURAM_PERIOD:float =        0.01    #ユーザープログラムの_loopの周期
 #===============↑↑定数の宣言(ここまで)↑↑===============
 
 
@@ -116,14 +116,14 @@ font2 = ("HG明朝B", 10) #ログを表示する際に用いるフォント
 #==============↓↓window1関係(ここから)↓↓=============== #TODOwindow1関係
 class window1_Contents:
     def __init__(self):
-        GENERAL_SPACE =             "  "            #ウィジェット間の横の間隔
-        RIGHT_LEFT_BETWEEN_SPACE =  "             " #右のアドレスの列と左のアドレスの列の横の間隔
+        GENERAL_SPACE:str =             "  "            #ウィジェット間の横の間隔
+        RIGHT_LEFT_BETWEEN_SPACE:str =  "             " #右のアドレスの列と左のアドレスの列の横の間隔
 
-        ADDRESS_LOG_LIST_BOX_HEIGHT =       3   #アドレスごとのログを表示するリストボックスの高さ
-        ADDRESS_LOG_LIST_BOX_WIDTH =        25  #アドレスごとのログを表示するリストボックスの幅
-        ADDRESS_UART_LOG_LIST_BOX_WIDTH =   21
+        ADDRESS_LOG_LIST_BOX_HEIGHT:int =       3   #アドレスごとのログを表示するリストボックスの高さ
+        ADDRESS_LOG_LIST_BOX_WIDTH:int =        25  #アドレスごとのログを表示するリストボックスの幅
+        ADDRESS_UART_LOG_LIST_BOX_WIDTH:int =   21
 
-        MAIN_LOG_LIST_BOX_HEIGHT =  11  #メインのログを表示するリストボックスの高さ
+        MAIN_LOG_LIST_BOX_HEIGHT:int =  11  #メインのログを表示するリストボックスの高さ
 
         self.window1_frame = tkinter.Tk()               #window1を宣言する
         self.frame = tkinter.Frame(self.window1_frame)  #window1のフレームを作成する
@@ -732,45 +732,45 @@ class window1_Contents:
 
     def portAddressSetting(self):
         portAddressSettingWindow.startWindow()
-        terminalLog.print(True, "portAddressSettingWindow is started")
+        Ditel_DROS_Kernel.terminalLog.print(True, "portAddressSettingWindow is started")
     
     def portAddressSettingCheck(self):
         portAddressSettingCheckWindow.startWindow()
-        terminalLog.print(True, "portAddressSettingCheckWindow is started")
+        Ditel_DROS_Kernel.terminalLog.print(True, "portAddressSettingCheckWindow is started")
 
     def communicationStart(self):
         result = tkinter.messagebox.askquestion(title="通信の開始", message="本当に通信を開始しますか?")
         if(result == "yes"):
-            terminalLog.print(True, "requested start communication")
+            Ditel_DROS_Kernel.terminalLog.print(True, "requested start communication")
 
             global programHasStarted
             programHasStarted = True
             self.logPrint(0, True, "read number of thread : thread count = " + str(threading.active_count()))
 
             programsys.startUserProgram()
-            terminalLog.print(True, "userPrograms is started")
+            Ditel_DROS_Kernel.terminalLog.print(True, "userPrograms is started")
 
             self.threadForLog.start()
-            terminalLog.print(True, "threadForLog is started")
+            Ditel_DROS_Kernel.terminalLog.print(True, "threadForLog is started")
 
             serialsys.startSerial()
-            terminalLog.print(True, "systemSerial is started")
+            Ditel_DROS_Kernel.terminalLog.print(True, "systemSerial is started")
 
             try:
                 bypasssys._bypassStart()
                 self.logPrint(0, True, "start bypass thread")
-                terminalLog.print(True, "threadForBypass is started")
+                Ditel_DROS_Kernel.terminalLog.print(True, "threadForBypass is started")
             except:
                 self.logPrint(0, False, "start bypass thread")
-                terminalLog.print(False, "threadForBypass is started")
+                Ditel_DROS_Kernel.terminalLog.print(False, "threadForBypass is started")
 
             try:
                 emergencysys._startStateRead()
                 self.logPrint(0, True, "start state read thread")
-                terminalLog.print(True, "threadForReadState is started")
+                Ditel_DROS_Kernel.terminalLog.print(True, "threadForReadState is started")
             except:
                 self.logPrint(0, False, "start state read thread")
-                terminalLog.print(False, "threadForReadState is started")
+                Ditel_DROS_Kernel.terminalLog.print(False, "threadForReadState is started")
 
             self.buttonA_1['state'] = "disable"
             self.buttonA_2['state'] = "disable"
@@ -779,7 +779,7 @@ class window1_Contents:
 
             self.logPrint(0, True, "read number of thread : thread count = " + str(threading.active_count()))
         elif (result == "no"):
-            terminalLog.print(False, "requested start communication")
+            Ditel_DROS_Kernel.terminalLog.print(False, "requested start communication")
 
     def logPrintProgram(self):
         while True:
@@ -809,12 +809,12 @@ class window1_Contents:
 
         self.window1Menubar = tkinter.Menu(self.window1_frame, fg= COLOR_MENU_BAR_TEXT,bg=COLOR_MENU_BAR_BACK)
         self.window1_frame.config(menu=self.window1Menubar)
-        terminalLog.print(True, "window1 frame is ready")
+        Ditel_DROS_Kernel.terminalLog.print(True, "window1 frame is ready")
 
         #メニューバーの内容の作成
         self.window1FileMenu = tkinter.Menu(self.window1_frame, fg=COLOR_MENU_BAR_TEXT, bg=COLOR_MENU_BAR_BACK, tearoff=False)
         self.window1SettingMenu = tkinter.Menu(self.window1_frame, fg=COLOR_MENU_BAR_TEXT, bg=COLOR_MENU_BAR_BACK, tearoff=False)
-        terminalLog.print(True, "window1MenuBar is made")
+        Ditel_DROS_Kernel.terminalLog.print(True, "window1MenuBar is made")
 
         #メニューバーの内容の設定
         self.window1Menubar.add_cascade(label="ファイル", menu=self.window1FileMenu)  #ファイルのメニュー
@@ -826,7 +826,7 @@ class window1_Contents:
         #設定の内容
         self.window1SettingMenu.add_command(label="ポート・アドレスの設定", command=self.portAddressSetting)
         self.window1SettingMenu.add_command(label="ポート・アドレスの確認", command=portAddressSettingCheckWindow.startWindow)
-        terminalLog.print(True, "window1 MenuBar is ready")
+        Ditel_DROS_Kernel.terminalLog.print(True, "window1 MenuBar is ready")
 
         self.frame.grid(row=0, column=0)
         self.label0_1.grid(row=0, column=0)
@@ -1158,11 +1158,11 @@ class window1_Contents:
         self.buttonA_4.grid(row= 15, column=23)
         self.buttonA_5.grid(row= 16, column=23)
 
-        terminalLog.print(True, "window1 Contents is ready")
+        Ditel_DROS_Kernel.terminalLog.print(True, "window1 Contents is ready")
 
         self.window1_frame.mainloop()
 
-        terminalLog.print(True, "window1 mainLoop is ended")
+        Ditel_DROS_Kernel.terminalLog.print(True, "window1 mainLoop is ended")
 
         exit()
 
@@ -1170,12 +1170,12 @@ class window1_Contents:
         if(programHasStarted):
             stopCommunicationReturn = self.stopCommunication()
             if(stopCommunicationReturn):
-                terminalLog.print(True, "stop communication and thread")
+                Ditel_DROS_Kernel.terminalLog.print(True, "stop communication and thread")
                 self.window1_frame.destroy()
-                terminalLog.print(True, "request DROS shutdown")
+                Ditel_DROS_Kernel.terminalLog.print(True, "request DROS shutdown")
                 exit()
             else:
-                terminalLog.print(False, "stop communication and thread")
+                Ditel_DROS_Kernel.terminalLog.print(False, "stop communication and thread")
         else:
             self.window1_frame.destroy()
             exit()
@@ -1183,7 +1183,7 @@ class window1_Contents:
     def stopCommunication(self):
         result = tkinter.messagebox.askquestion(title="通信の終了", message="本当に通信を終了しますか?")
         if (result  == "yes"):
-            terminalLog.print(True, "request stop communication")
+            Ditel_DROS_Kernel.terminalLog.print(True, "request stop communication")
             self.logPrint(0, True, "read number of thread : thread count = " + str(threading.active_count()))
             self.logPrint(0, True, "start address threads stopping")
             Ditel_DROS_Kernel.threadCondition = False
@@ -1193,57 +1193,57 @@ class window1_Contents:
                 resultSerialThreadStoped = programsys.addressProgram[_i]._serial.end()
 
                 self.logPrint(_i, resultSerialThreadStoped, "serial thread stoped")
-                terminalLog.print(resultSerialThreadStoped, "Address" + str(_i) + "_Program Serial thread stoped")
+                Ditel_DROS_Kernel.terminalLog.print(resultSerialThreadStoped, "Address" + str(_i) + "_Program Serial thread stoped")
 
                 try:
                     programsys.addressThread[_i].join()
                     self.logPrint(_i, True, " user program thread stoped")
-                    terminalLog.print(True, "Address" + str(_i) + "_Program thread stoped")
+                    Ditel_DROS_Kernel.terminalLog.print(True, "Address" + str(_i) + "_Program thread stoped")
                 except:
                     self.logPrint(_i, False,  " user program thread stoped")
-                    terminalLog.print(False, "Address" + str(_i) + "_Program thread stoped")
+                    Ditel_DROS_Kernel.terminalLog.print(False, "Address" + str(_i) + "_Program thread stoped")
             
             
             try:
                 programsys.addressThread[0].join()
                 self.logPrint(0, True,  " user program thread stoped")
-                terminalLog.print(True, "Main_Program thread stoped")
+                Ditel_DROS_Kernel.terminalLog.print(True, "Main_Program thread stoped")
             except:
                 self.logPrint(0, False, "user program thread stoped")
-                terminalLog.print(False, "Main_Program thread stoped")
+                Ditel_DROS_Kernel.terminalLog.print(False, "Main_Program thread stoped")
 
-            terminalLog.print(True, "finish all serial thread and user program thread stopping")
+            Ditel_DROS_Kernel.terminalLog.print(True, "finish all serial thread and user program thread stopping")
             self.logPrint(0, True, "read number of thread : thread count = " + str(threading.active_count()))
 
             
             try:
                 self.threadForLog.join()
                 self.logPrint(0, True, "log print thread stoped")
-                terminalLog.print(True, "threadForLogPrint stoped")
+                Ditel_DROS_Kernel.terminalLog.print(True, "threadForLogPrint stoped")
             except:
                 self.logPrint(0, False, "log print thread stoped")
-                terminalLog.print(False, "threadForLogPrint stoped")
+                Ditel_DROS_Kernel.terminalLog.print(False, "threadForLogPrint stoped")
             
             
             try:
                 bypasssys._bypassThread.join()
                 self.logPrint(0, True, "bypass thread stop")
-                terminalLog.print(True, "threadForBypass stoped")
+                Ditel_DROS_Kernel.terminalLog.print(True, "threadForBypass stoped")
             except:
                 self.logPrint(0, False, "bypass thread stop")
-                terminalLog.print(False, "threadForBypass stoped")
+                Ditel_DROS_Kernel.terminalLog.print(False, "threadForBypass stoped")
             
             try:
                 emergencysys._emergencyThread.join()
                 self.logPrint(0, True, "state read thread stop")
-                terminalLog.print(True, "threadForReadState stoped")
+                Ditel_DROS_Kernel.terminalLog.print(True, "threadForReadState stoped")
             except:
                 self.logPrint(0, False, "state read thread stop")
-                terminalLog.print(False, "threadForReadState stoped")
+                Ditel_DROS_Kernel.terminalLog.print(False, "threadForReadState stoped")
             
 
             self.logPrint(0, True, "finish all thread stopping")
-            terminalLog.print(True, "finish all thread stopping")
+            Ditel_DROS_Kernel.terminalLog.print(True, "finish all thread stopping")
 
             self.logPrint(0, True, "read number of thread : thread count = " + str(threading.active_count()))
 
@@ -1251,7 +1251,7 @@ class window1_Contents:
             self.buttonA_5['state'] = "normal"
             return True
         elif (result == "no"):
-            terminalLog.print(False, "request stop communication")
+            Ditel_DROS_Kernel.terminalLog.print(False, "request stop communication")
             return False
 
 #==============↑↑window1関係(ここまで)↑↑===============
@@ -1393,7 +1393,7 @@ class window2_1_Contens:
 
         self.button1 = tkinter.ttk.Button(self.frame, text="完了", command=self.quitWindow, width=10)
 
-        self.hasMade = False
+        self.hasMade:bool = False
     
     def setSerialPort(self):
         for _i in range(len(portAddressRelationships)):
@@ -1418,7 +1418,8 @@ class window2_1_Contens:
                     portAddressRelationships[int(self.returnInfo[2])] = self.listSerialPort[_i]
         except:
             tkinter.messagebox.showerror("エラー", "ありえないアドレスを要求されました.\n・マイコンがリセットされているか. \n・正しいアドレスが設定されているか. \n上記のことを確認してください.")
-        
+            Ditel_DROS_Kernel.terminalLog.print(False, "address of port")
+
     def startWindow(self):
         self.window2_1_frame.deiconify()
         self.frame.pack(fill=tkinter.BOTH, padx=1, pady=5)
@@ -1453,8 +1454,8 @@ class window2_1_Contens:
 #==============↓↓window2_2関係(ここから)↓↓=============== #TODOwindow2_2関係
 class window2_2_Contents:
     def __init__(self):
-        COMBOBOX_ENTRY_BETWEEN_WIDETH = "   "
-        LEFT_RIGHT_BETWEEN_WIDETH =     "        "
+        COMBOBOX_ENTRY_BETWEEN_WIDETH:str = "   "
+        LEFT_RIGHT_BETWEEN_WIDETH:str =     "        "
 
         self.window2_2_frame = tkinter.Tk()
         self.frame = tkinter.Frame(self.window2_2_frame)
@@ -1690,7 +1691,7 @@ class window2_2_Contents:
 
         self.checkbutton1_1.checkbutton1_1_value = self.checkbutton1_1_value
 
-        self.hasMade = False
+        self.hasMade:bool = False
         
 
     def Checkbutton1_1Command(self):
@@ -2116,8 +2117,8 @@ class window2_2_Contents:
 #==============↓↓window2_3_関係(ここから)↓↓=============== #TODOwindow2_3_関係
 class window2_3_Contens:
     def __init__(self):
-        COMBOBOX_ENTRY_BETWEEN_WIDETH = "   "
-        LEFT_RIGHT_BETWEEN_WIDETH =     "        "
+        COMBOBOX_ENTRY_BETWEEN_WIDETH:str = "   "
+        LEFT_RIGHT_BETWEEN_WIDETH:str =     "        "
 
         self.window2_3_frame = tkinter.Tk()
         self.frame = tkinter.Frame(self.window2_3_frame)
@@ -3463,14 +3464,14 @@ class _bypass:
 
                             Ditel_System_Bypass.bypass[_i].requestAvaiableData = False
                     except:
-                        pass
+                        Ditel_DROS_Kernel.terminalLog.print(False, "_bypass serial read data")
                     
                     try:
                         if(Ditel_System_Bypass.bypass[_i].requestSendData == True):
                             programsys.addressProgram[_i]._serial.send(Ditel_System_Bypass.bypass[_i].sendData)
                             Ditel_System_Bypass.bypass[_i].requestSendData = False
                     except:
-                        pass
+                        Ditel_DROS_Kernel.terminalLog.print(False, "_bypass serial send data")
                     
             time.sleep(0.001)
 
@@ -3517,6 +3518,7 @@ class _emergency:
 
                 except:
                     mainWindow.logPrint(_i, False, "send of emergency declaration")
+                    Ditel_DROS_Kernel.terminalLog.print(False, "send of emergency declaration")
                     self.emergencySendResult = "#ff0000"
                 
                 match _i:
@@ -3569,36 +3571,34 @@ class _emergency:
 
 #==============↑↑emergency関係(ここまで)↑↑===============
 
-terminalLog = Ditel_DROS_Kernel._terminalLog()
-
-terminalLog.print(True, "start DROS | version : " + VERSION)
+Ditel_DROS_Kernel.terminalLog.print(True, "start DROS | version : " + VERSION)
 
 mainWindow = window1_Contents()
-terminalLog.print(True, "mainWindow Contents is ready")
+Ditel_DROS_Kernel.terminalLog.print(True, "mainWindow Contents is ready")
 
 portAddressSettingWindow = window2_Contents()
-terminalLog.print(True, "portAddressSettingWindow Contents is ready")
+Ditel_DROS_Kernel.terminalLog.print(True, "portAddressSettingWindow Contents is ready")
 
 portAddressAutoSettingWindow = window2_1_Contens()
-terminalLog.print(True, "portAddressAutoSettingWindow Contents is ready")
+Ditel_DROS_Kernel.terminalLog.print(True, "portAddressAutoSettingWindow Contents is ready")
 
 portAddressManualSettingWindow = window2_2_Contents()
-terminalLog.print(True, "portAddressManualSettingWindow Contents is ready")
+Ditel_DROS_Kernel.terminalLog.print(True, "portAddressManualSettingWindow Contents is ready")
 
 portAddressSettingCheckWindow = window2_3_Contens()
-terminalLog.print(True, "portAddressSettingCheckWindow Contents is ready")
+Ditel_DROS_Kernel.terminalLog.print(True, "portAddressSettingCheckWindow Contents is ready")
 
 serialsys = systemSerial()
-terminalLog.print(True, "systemSerial is ready")
+Ditel_DROS_Kernel.terminalLog.print(True, "systemSerial is ready")
 
 programsys = userPrograms()
-terminalLog.print(True, "userPrograms is ready")
+Ditel_DROS_Kernel.terminalLog.print(True, "userPrograms is ready")
 
 bypasssys = _bypass()
-terminalLog.print(True, "systemBypass is ready")
+Ditel_DROS_Kernel.terminalLog.print(True, "systemBypass is ready")
 
 emergencysys = _emergency()
-terminalLog.print(True, "emergencySystem is ready")
+Ditel_DROS_Kernel.terminalLog.print(True, "emergencySystem is ready")
 
 mainWindow.startWindow()
-terminalLog.print(True, "mainWindow is started")
+Ditel_DROS_Kernel.terminalLog.print(True, "mainWindow is started")

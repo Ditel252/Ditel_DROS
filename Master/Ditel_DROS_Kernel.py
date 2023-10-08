@@ -16,3 +16,5 @@ class _terminalLog:
             print("[%8.3f] "%(printTime - self.startProgramTime) + "[  OK  ] : " + _message)
         else:
             print("[%8.3f] "%(printTime - self.startProgramTime) + "[FAILED] : " + _message)
+
+terminalLog = _terminalLog()
