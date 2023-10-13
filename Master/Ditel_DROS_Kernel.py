@@ -1,5 +1,6 @@
 import time
 
+automaticControlFunction:bool = False
 threadCondition:bool = True
 _stateOfEmergency:bool = False
 addressWhereSendEmergency:int = 0

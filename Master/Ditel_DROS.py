@@ -1,6 +1,6 @@
 """=======================================
 <Ditel Robot Operateting System>
-バージョン : v1.1.33
+バージョン : v1.1.35
 ======================================="""
 
 import tkinter
@@ -10,6 +10,7 @@ import Ditel_DROS_Kernel
 from Ditel_Serial import *
 import time
 import Ditel_System_Bypass
+import sys
 
 import User_Programs.Address1_Program as add1
 import User_Programs.Address2_Program as add2
@@ -36,7 +37,7 @@ import User_Programs.Main_Program as addMain
 
 #===============↓↓定数の宣言(ここから)↓↓===============
 #バージョン設定
-VERSION = "1.1.33"
+VERSION = "1.1.35"
 
 #window1の大きさとタイトルの設定
 WINDOW1_HEIGHT:int =    1920                                        #高さ
@@ -1159,6 +1160,13 @@ class window1_Contents:
         self.buttonA_5.grid(row= 16, column=23)
 
         Ditel_DROS_Kernel.terminalLog.print(True, "window1 Contents is ready")
+        
+        if(Ditel_DROS_Kernel.automaticControlFunction == True):
+            portAddressAutoSettingWindow.startWindow()
+            
+            portAddressAutoSettingWindow.quitWindow()
+            
+            mainWindow.communicationStart()
 
         self.window1_frame.mainloop()
 
@@ -2787,6 +2795,10 @@ class window2_3_Contens:
             self.button1.grid(row=11, column=6)
         
         self.hasMade = True
+        
+        if(Ditel_DROS_Kernel.automaticControlFunction == True):
+            self.quitWindow()
+        
     
     def setWindow1Widgets(self):
         mainWindow.listbox1_1['state'] = "normal"
@@ -3572,6 +3584,15 @@ class _emergency:
 #==============↑↑emergency関係(ここまで)↑↑===============
 
 Ditel_DROS_Kernel.terminalLog.print(True, "start DROS | version : " + VERSION)
+
+arguments = sys.argv
+
+try:
+    if(arguments[1] == "-auto"):
+        Ditel_DROS_Kernel.automaticControlFunction = True
+        Ditel_DROS_Kernel.terminalLog.print(True, "Automatic control function is availability")
+except:
+    pass
 
 mainWindow = window1_Contents()
 Ditel_DROS_Kernel.terminalLog.print(True, "mainWindow Contents is ready")
