@@ -119,7 +119,7 @@ class ditelSerial:
                 else:
                     pass
             except:
-                Ditel_DROS_Kernel.terminalLog.print(False, "serial read data")
+                pass
 
             if(Ditel_DROS_Kernel.threadCondition == False):
                 break
@@ -154,7 +154,7 @@ class ditelSerial:
         self.serialModule.write(bytes([int(_sendData[5] + COMMUNICATION_BASE_VALUE)]))
 
         self.txLogPrint(_sendData[0], _sendData[1] + COMMUNICATION_BASE_VALUE, _sendData[2] + COMMUNICATION_BASE_VALUE, _sendData[3] + COMMUNICATION_BASE_VALUE, _sendData[4] + COMMUNICATION_BASE_VALUE, _sendData[5] + COMMUNICATION_BASE_VALUE)
-        Ditel_DROS_Kernel.terminalLog.print(True, "Address%2d Read %3d:%3d:%3d:%3d:%3d:%3d" % (self.useAddress, int(_sendData[0]), int(_sendData[1] + COMMUNICATION_BASE_VALUE), int(_sendData[2] + COMMUNICATION_BASE_VALUE), int(_sendData[3] + COMMUNICATION_BASE_VALUE), int(_sendData[4] + COMMUNICATION_BASE_VALUE), int(_sendData[5] + COMMUNICATION_BASE_VALUE)))
+        Ditel_DROS_Kernel.terminalLog.print(True, "Address%2d Read | %3d:%3d:%3d:%3d:%3d:%3d" % (self.useAddress, int(_sendData[0]), int(_sendData[1] + COMMUNICATION_BASE_VALUE), int(_sendData[2] + COMMUNICATION_BASE_VALUE), int(_sendData[3] + COMMUNICATION_BASE_VALUE), int(_sendData[4] + COMMUNICATION_BASE_VALUE), int(_sendData[5] + COMMUNICATION_BASE_VALUE)))
         _readReturnDataTime = 0
         while(self._serialAvaiableVariable == False):
             if(_readReturnDataTime >= 15):
