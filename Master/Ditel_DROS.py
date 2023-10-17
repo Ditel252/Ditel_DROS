@@ -1,6 +1,6 @@
 """=======================================
 <Ditel Robot Operateting System>
-バージョン : v1.1.36
+バージョン : v1.1.37
 ======================================="""
 
 import tkinter
@@ -37,7 +37,7 @@ import User_Programs.Main_Program as addMain
 
 #===============↓↓定数の宣言(ここから)↓↓===============
 #バージョン設定
-VERSION = "1.1.36"
+VERSION = "1.1.37"
 
 #window1の大きさとタイトルの設定
 WINDOW1_HEIGHT:int =    1920                                        #高さ
@@ -130,6 +130,8 @@ class window1_Contents:
         self.frame = tkinter.Frame(self.window1_frame)  #window1のフレームを作成する
         self.window1_frame.withdraw()                   #window1を非表示にする
         self.style = tkinter.ttk.Style(self.frame)      #window1のスタイルを宣言する
+        
+        self.startCommunicationRequest:str = "no"
 
         #Labelのスタイルの設定
         self.style.configure("TLabel",
@@ -741,11 +743,19 @@ class window1_Contents:
 
     def communicationStart(self):
         if(Ditel_DROS_Kernel.automaticControlFunction == True):
-            result = tkinter.messagebox.askquestion(title="通信の開始", message="本当に通信を開始しますか?")
+            self.startCommunicationRequest = "yes"
+            
+            self.logPrint(0, True, "Auto : start communication")
+            Ditel_DROS_Kernel.terminalLog.print(True, "Auto : start communication")
+            
+            self.logPrint(0, True, "please wait 5 second")
+            Ditel_DROS_Kernel.terminalLog.print(True, "please wait 5 second")
+            
+            time.sleep(5)
         else:
-            result = "yes"
+            self.startCommunicationRequest = tkinter.messagebox.askquestion(title="通信の開始", message="本当に通信を開始しますか?")
         
-        if(result == "yes"):
+        if(self.startCommunicationRequest == "yes"):
             Ditel_DROS_Kernel.terminalLog.print(True, "requested start communication")
 
             global programHasStarted
@@ -783,7 +793,7 @@ class window1_Contents:
             self.buttonA_4['state'] = "normal"
 
             self.logPrint(0, True, "read number of thread : thread count = " + str(threading.active_count()))
-        elif (result == "no"):
+        elif (self.startCommunicationRequest == "no"):
             Ditel_DROS_Kernel.terminalLog.print(False, "requested start communication")
 
     def logPrintProgram(self):
@@ -1164,6 +1174,13 @@ class window1_Contents:
         self.buttonA_5.grid(row= 16, column=23)
 
         Ditel_DROS_Kernel.terminalLog.print(True, "window1 Contents is ready")
+        
+        if(Ditel_DROS_Kernel.automaticControlFunction == True):
+            portAddressAutoSettingWindow.startWindow()
+            
+            portAddressAutoSettingWindow.quitWindow()
+            
+            mainWindow.communicationStart()
 
         self.window1_frame.mainloop()
 
@@ -2793,6 +2810,9 @@ class window2_3_Contens:
         
         self.hasMade = True
         
+        if(Ditel_DROS_Kernel.automaticControlFunction == True):
+            self.quitWindow()
+        
     
     def setWindow1Widgets(self):
         mainWindow.listbox1_1['state'] = "normal"
@@ -3574,46 +3594,8 @@ class _emergency:
             
     def _startStateRead(self):
         self._emergencyThread.start()
-        
-#==============↑↑emergency関係(ここまで)↑↑===============
 
-#==========↓↓automatic control関係(ここから)↓↓=========== #TODOautomatic control関係
-class _auto:
-    def __init__(self):
-        self._autoThread = threading.Thread(target=self._autoControlProgram)
-        
-    def _autoControlProgram(self):
-        mainWindow.logPrint(0, True, "start auto control program")
-        Ditel_DROS_Kernel.terminalLog.print(True, "start auto control program")
-        
-        mainWindow.logPrint(0, True, "please wait 5 second")
-        Ditel_DROS_Kernel.terminalLog.print(True, "please wait 5 second")
-        
-        time.sleep(5)
-        
-        mainWindow.logPrint(0, True, "start port address auto setting")
-        Ditel_DROS_Kernel.terminalLog.print(True, "start port address auto setting")
-        
-        try:
-            portAddressAutoSettingWindow.startWindow()            
-            portAddressAutoSettingWindow.quitWindow()
-            mainWindow.logPrint(0, True, "finish port address auto setting")
-            Ditel_DROS_Kernel.terminalLog.print(True, "finish port address auto setting")
-        except:
-            mainWindow.logPrint(0, False, "finish port address auto setting")
-            Ditel_DROS_Kernel.terminalLog.print(False, "finish port address auto setting")
-        
-        mainWindow.logPrint(0, True, "please wait 5 second")
-        Ditel_DROS_Kernel.terminalLog.print(True, "please wait 5 second")
-        
-        mainWindow.communicationStart()
-        
-        mainWindow.logPrint(0, True, "started communication!!")
-        Ditel_DROS_Kernel.terminalLog.print(True, "started communication!!")
-    
-    def _autoControlStart(self):
-        self._autoThread.start()
-#==========↑↑automatic control関係(ここまで)↑↑===========
+#==============↑↑emergency関係(ここまで)↑↑===============
 
 Ditel_DROS_Kernel.terminalLog.print(True, "start DROS | version : " + VERSION)
 
@@ -3623,9 +3605,6 @@ try:
     if(arguments[1] == "-auto"):
         Ditel_DROS_Kernel.automaticControlFunction = True
         Ditel_DROS_Kernel.terminalLog.print(True, "Automatic control function is availability")
-    else:
-        Ditel_DROS_Kernel.terminalLog.print(False, "ERROR : Unkown option")
-        exit()
 except:
     pass
 
